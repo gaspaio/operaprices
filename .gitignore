@@ -2,11 +2,12 @@
 notes.md
 upwebdata.sh
 
-scrapping/operaprices/settings.py
-scrapping/__pycache__/
+scraping/operaprices/settings.py
+scraping/scrapinghub.yml
+scraping/__pycache__/
 *.py[cod]
-scrapping/build
-scrapping/*.egg-info/
+scraping/build
+scraping/*.egg-info/
 
 
 web/node_modules
