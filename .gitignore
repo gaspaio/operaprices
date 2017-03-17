@@ -1,0 +1,15 @@
+
+notes.md
+upwebdata.sh
+
+scrapping/operaprices/settings.py
+scrapping/__pycache__/
+*.py[cod]
+scrapping/build
+scrapping/*.egg-info/
+
+
+web/node_modules
+web/config/app.js
+web/dist
+

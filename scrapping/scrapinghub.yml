@@ -1,0 +1,5 @@
+projects:
+  default:
+    id: 163718
+    stack: scrapy:1.3-py3
+requirements_file: requirements.txt
