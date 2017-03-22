@@ -13,4 +13,4 @@ scraping/*.egg-info/
 web/node_modules
 web/config/app.js
 web/dist
-
+web/npm-debug.log
