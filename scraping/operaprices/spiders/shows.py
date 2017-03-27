@@ -26,20 +26,22 @@ class ShowsSpider(scrapy.Spider):
         # Get locations string
         locations =  [s.strip() for s in items.css('div.FeaturedList__card-content > div.FeaturedList__card-metadata > div::text').extract() if len(s.strip())]
 
-        # Get IDs and slug
-        urls = items.css('div.FeaturedList__card-content > a').xpath('@href').extract()
-        ids = [self.getIdFromUrls(u) for u in urls]
-
         for i in range(len(items)):
             # test if type not 'Opéra', ignore (académie, recital)
             if types[i] != 'Opéra': continue
 
+            # If no link to tickets, ignore
+            url = items[i].css('div.FeaturedList__card-content > a').xpath('@href').extract()
+            if len(url) == 0: continue
+
+            url = url[0]
+            id = self.getIdFromUrls(url)
             [start, end, loc] = self.parseLocationStr(locations[i])
 
-            request = scrapy.Request(urls[i], callback=self.parseShowData)
+            request = scrapy.Request(url, callback=self.parseShowData)
             request.meta['item'] = Show(
-                id=ids[i][0],
-                slug=ids[i][1],
+                id=id[0],
+                slug=id[1],
                 title=titles[i],
                 author=authors[i],
                 location=loc,
@@ -140,5 +142,6 @@ class ShowsSpider(scrapy.Spider):
         else: year = ret[1].year
 
         ret[0] = dt.date(year, month, int(parts[0]))
+        # print("Parsed {} into".format(str), ret)
         return ret
 

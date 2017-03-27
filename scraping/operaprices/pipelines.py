@@ -72,7 +72,9 @@ class S3ExportPipeline(object):
             self.s3.upload_fileobj(buf, self.bucketname, filename)
             self.s3.put_object_acl(Bucket=self.bucketname, Key=filename, ACL='public-read')
         else:
-            print('Saving file "{}"'.format(name), data)
+            print('Saving file "{}"'.format(name))
+            if (name != 'index'):
+                print('start_date={}, end_date={}'.format(data['start_date'], data['end_date']))
 
         self.files.add(name + '.json')
 
