@@ -72,14 +72,22 @@ export default class Show {
     return ts
   }
 
-  getCheapestCurrentPerformances () {
-    if (!this.isOn) return []
+  getTendency (days) {
+    const lastPrices = this.getCheapestTs().slice(-days).reverse().map(info => info[1])
+    for (let i = 1; i < lastPrices.length; i++) {
+      if (lastPrices[i] === lastPrices[i - 1]) continue
+      return (lastPrices[i - 1] - lastPrices[i]) / Math.abs(lastPrices[i - 1] - lastPrices[i])
+    }
+    return 0
+  }
 
-    let minPrice, minPerfs
+  getCheapestCurrentPerformances () {
+    let minPrice, minCat, minPerfs
     Object.keys(this.performances).forEach(pDate => {
       this.performances[pDate][this.performances[pDate].length - 1].forEach(cat => {
         if (!cat[2]) return
         if (minPrice === undefined || cat[1] < minPrice) {
+          minCat = cat[0]
           minPrice = cat[1]
           minPerfs = [pDate]
           return
@@ -90,7 +98,7 @@ export default class Show {
         }
       })
     })
-    return [minPrice, minPerfs]
+    return [minPrice, minCat, minPerfs]
   }
 
   getDates () {

@@ -1,4 +1,5 @@
 module.exports = {
-  //  'mainUrl': '/static/data'
-  'mainUrl': 'REPLACEME'
+  'mainUrl': 'REPLACEME',
+  'tendencyDays': 3
 }
+
