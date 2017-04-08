@@ -10,6 +10,7 @@
 <script>
 import * as moment from 'moment-timezone'
 import * as config from '../../config/app'
+
 export default {
   name: 'AppHeader',
   props: ['lastUpdated'],
@@ -17,7 +18,9 @@ export default {
     updatedStr: function () {
       return moment.tz(this.lastUpdated, 'UTC').format('DD MMMM YYYY, h[h]mm')
     },
-    days: config.tendencyDays
+    days: function () {
+      return config.tendencyDays
+    }
   }
 }
 </script>

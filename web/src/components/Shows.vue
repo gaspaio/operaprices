@@ -7,7 +7,7 @@
       <tbody>
       <tr v-for="show in showData">
         <td class='show-info'>
-          <h3>{{ show.title }}</h3>
+          <h3><a :href="show.link" target="_blank">{{ show.title }}</a></h3>
           <p class='author'>{{ show.author }}</p>
           <p class='location'><strong>{{ show.location }}</strong> | {{ show.dates }}</p>
         </td>
@@ -44,10 +44,9 @@ export default {
         .filter(show => show.isOn)
         .map(show => {
           let [minPrice, minCat, minPerfs] = show.getCheapestCurrentPerformances()
-          const tendency = show.getTendency(config.tendencyDays)
-          console.log(show.title, tendency)
           return {
             title: show.title,
+            link: `https://www.operadeparis.fr/billetterie/${show.slug}`,
             start: show.start_date,
             author: show.author,
             location: show.location,
