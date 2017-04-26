@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 const apiRouter = express.Router();
 
 apiRouter.get('/shows', (req, res) => {
-  db.getShows().then(ss => res.json(ss))
+  db.getShows({active: true}).then(ss => res.json(ss))
 })
 
 apiRouter.get('shows/:id', (req, res) => {

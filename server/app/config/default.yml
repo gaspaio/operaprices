@@ -5,4 +5,5 @@ logger:
   level: info
 db:
   name: default.db
+  default_time_window: 72  # hours
 
