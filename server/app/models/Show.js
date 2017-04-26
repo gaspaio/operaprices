@@ -1,3 +1,5 @@
+const utils = require('./utils')
+
 module.exports = class Show {
   constructor (row = {}) {
     this.id =   'id' in row   ? row.id : null
@@ -15,6 +17,9 @@ module.exports = class Show {
     this.endDate    = 'end_date'    in row ? row.end_date : null
     this.createdAt  = 'created_at'  in row ? row.created_at : null
     this.updatedAt  = 'updated_at'  in row ? row.updated_at : null
+
+    // Computed fields
+    this.active = this.startDate >= utils.nowDate()
   }
 
   toJson () {
@@ -27,7 +32,8 @@ module.exports = class Show {
       startDate: this.startDate,
       endDate: this.endDate,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
+      active: this.active
     }
   }
 }

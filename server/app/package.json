@@ -26,7 +26,8 @@
     "pretty-error": "^2.1.0"
   },
   "scripts": {
-    "db:init": "sqlite3 db/development.db < db/init.sql",
+    "db:dev:init": "sqlite3 db/development.db < db/init.sql",
+    "db:dev:sh": "sqlite3 db/development.db",
     "db:dev:fixtures": "sqlite3 db/development.db < db/fixtures.sql",
     "start:dev": "NODE_ENV=development nodemon index.js",
     "start": "NODE_ENV=production node index.js"

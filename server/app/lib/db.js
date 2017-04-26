@@ -19,7 +19,12 @@ module.exports.getShows = async () => {
   return rows.map(row => new Show(row))
 }
 
-module.exports.getLowestFuturePerformance = aync (id) => {
-
+module.exports.getCheapestActivePrices = async (showId, time) => {
+  // for show showId
+  // for all active performances (date > now)
+  // for all distinct scraping TS in frame (price created_at > now - time)
+  // for all available prices
+  // - get cheapest price object
+  // return [{ time, performance, price }]
 }
 
