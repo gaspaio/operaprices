@@ -1,0 +1,47 @@
+---
+- hosts: default
+  # remote_user: root
+  become: yes
+  # become_method: sudo
+  vars:
+    - common_hostname: 'devmachine'
+  tasks:
+    - hostname:
+        name: "{{ common_hostname }}"
+
+  # hostname -> /etc/hosts
+
+    # Base utilities & dependencies
+    - apt:
+        name: "{{ item }}"
+        state: present
+        cache_valid_time: 3600
+      with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2
+      - software-properties-common
+      - vim
+      - libsqlite3-dev
+
+    # Install docker-ce
+    - apt_key:
+        url: "https://download.docker.com/linux/debian/gpg"
+        id: 0EBFCD88
+        state: present
+
+    - apt_repository:
+        repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
+        update_cache: yes
+
+    - apt:
+        name: "docker-ce"
+        state: latest
+        cache_valid_time: 3600
+
+    - systemd:
+        name: docker
+        enabled: yes
+

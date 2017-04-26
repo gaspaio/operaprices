@@ -9,8 +9,10 @@ scraping/__pycache__/
 scraping/build
 scraping/*.egg-info/
 
-
-web/node_modules
+node_modules
+npm-debug.log
 web/config/app.js
 web/dist
-web/npm-debug.log
+server/app/db/*.db
+.vagrant
+

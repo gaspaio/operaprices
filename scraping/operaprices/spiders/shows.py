@@ -3,11 +3,12 @@ import scrapy
 import re
 from operaprices.items import Show
 import datetime as dt
+import logging
 
 class ShowsSpider(scrapy.Spider):
     name = "shows"
     allowed_domains = ["www.operadeparis.fr"]
-    start_urls = ['https://www.operadeparis.fr/saison-16-17/opera']
+    start_urls = ['https://www.operadeparis.fr/saison-17-18/opera']
 
     months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
               'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -25,13 +26,15 @@ class ShowsSpider(scrapy.Spider):
 
         # Get locations string
         locations =  [s.strip() for s in items.css('div.FeaturedList__card-content > div.FeaturedList__card-metadata > div::text').extract() if len(s.strip())]
+        logging.info("Items found: {}/{}/{}/{}/{}".format(len(items), len(types), len(titles), len(authors),
+                                                          len(locations)))
 
         for i in range(len(items)):
             # test if type not 'Opéra', ignore (académie, recital)
             if types[i] != 'Opéra': continue
 
             # If no link to tickets, ignore
-            url = items[i].css('div.FeaturedList__card-content > a').xpath('@href').extract()
+            url = items[i].css('div.FeaturedList__card-content > a.FeaturedList__reserve-btn').xpath('@href').extract()
             if len(url) == 0: continue
 
             url = url[0]
