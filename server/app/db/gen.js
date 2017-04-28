@@ -16,9 +16,9 @@ data.forEach(show => {
   let location
 
   if (show.location.includes('Bastille')) {
-    location = 'bastille'
+    location = 'Opéra Bastille'
   } else if (show.location.includes('Garnier')) {
-    location = 'garnier'
+    location = 'Palais Garnier'
   } else {
     throw new Error('Unexpected location ', show.location, 'on show', show.slug)
   }

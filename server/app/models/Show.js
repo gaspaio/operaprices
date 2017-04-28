@@ -22,7 +22,8 @@ module.exports = class Show {
     this.active = this.endDate >= utils.nowDate()
   }
 
-  toJson () {
+    /*
+  toObject () {
     return {
       id: this.id,
       slug: this.slug,
@@ -36,5 +37,6 @@ module.exports = class Show {
       active: this.active
     }
   }
+  */
 }
 
