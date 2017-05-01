@@ -12,6 +12,7 @@
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "node-fetch": "^1.6.3",
+    "rx": "^4.1.0",
     "sqlite": "^2.5.0",
     "uuid": "^3.0.1",
     "winston": "^2.3.1"
@@ -32,7 +33,7 @@
     "db:dev:init": "sqlite3 db/development.db < db/init.sql",
     "db:dev:sh": "sqlite3 db/development.db",
     "db:dev:fixtures": "sqlite3 db/development.db < db/fixtures.sql",
-    "test":"mocha",
+    "test": "mocha",
     "start:dev": "NODE_ENV=development nodemon index.js",
     "start": "NODE_ENV=production node index.js"
   }
