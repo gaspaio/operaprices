@@ -1,6 +1,54 @@
 const moment = require('moment')
 
-module.exports.parseLocationString = str => {
+module.exports.showType = str => {
+  const type = str.replace(/\s+/g, '')
+  let ret = ''
+  switch (type) {
+    case 'Opéra':
+      ret = 'opera'
+      break
+    case 'Opéra-Académie':
+      ret = 'opera_academie'
+      break
+    default:
+      throw Error(`Unknown show type string :${str}`)
+      break
+  }
+  return ret
+}
+
+module.exports.featuredItem = html => {
+  const item = {}
+
+  item.title = $(html).find('div.FeaturedList__card-title > a.title-oeuvre > span').text().trim()
+  if (!item.title) throw new Error(`No title found.`)
+
+  item.url = $(html).find('div.FeaturedList__card-title > a.title-oeuvre').attr('href')
+  if (!item.url) throw new Error(`No showLink found.`)
+
+  item.author = $(html).find('div.FeaturedList__card-title > p > span').text().trim()
+  if (!item.author) throw new Error(`No author found.`)
+
+  item.type = parseType($(html).find('div.FeaturedList__card-title > p').text().replace(item.author, ''))
+  if (!item.type) throw new Error(`Unknown type.`)
+
+  const locationStr = $(html).find('div.FeaturedList__card-metadata > div.FeaturedList__metadata-location').text().trim()
+  const [startDate, endDate, location] = locationString(locationStr)
+  Object.assign(item, {startDate, endDate, location})
+  if (item.startDate > item.endDate || !item.location) throw new Error(`Unable to parse location.`)
+      //props.buyLink = $(item).find('a.FeaturedList__reserve-btn').attr('href') || ''
+      // if buyLink, extract 'id' and 'slug'
+      //props.slug = ''
+  return item
+}
+
+module.exports.buyLink = str => {
+  const matches = /^https?:\/\/www\.operadeparis\.fr\/billetterie\/([0-9]+-[^\/]+)$/.exec(str.trim())
+  if (!matches || matches.length != 2) throw new Error(`Unable to parse buyLink for item ${i}`)
+  return matches[1]
+}
+
+const locationString = str => {
   let start, end, loc, parts, dateParts, startParts, endParts
   const failMsg = `Unable to parse location string "${str}"`
 
@@ -56,3 +104,6 @@ module.exports.parseLocationString = str => {
 
   throw new Error(failMsg)
 }
+
+
+module.exports = {featuredItem}
