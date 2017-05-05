@@ -1,6 +1,10 @@
 const moment = require('moment')
 const cheerio = require('cheerio')
 
+const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+
+
 const showType = str => {
   const type = str.replace(/\s+/g, '')
   let ret = ''
@@ -22,6 +26,22 @@ const link2slug = href => {
   const matches = /^https?:\/\/www\.operadeparis\.fr\/.*\/([^\/]+)$/.exec(href.trim())
   if (!matches) throw Error(`Unable to get slug from link: ${href}`)
   return matches[1]
+}
+
+const parseSaleDate = str => {
+  // Ouverture &#xE0; la vente le 30 mai 2017<br><a href="https://www.operadeparis.fr/billetterie/230-pelleas-et-melisande">Voir les s&#xE9;ances</a>
+  const failMsg = `Unable to parse date sale string "${str}"`
+
+  const strClean = str.replace(/\s\s+/g, ' ').trim().toLowerCase()
+
+  matches = /^.*vente le ([0-9]{2}) (.*) ([0-9]{4})voir .*$/.exec(strClean)
+  if (!matches) throw new Error(failMsg)
+  if (!MONTHS.includes(matches[2].trim())) throw new Error(failMsg)
+  let [day, month, year] = [parseInt(matches[1]), MONTHS.indexOf(matches[2]), parseInt(matches[3])]
+
+  const time = moment.utc([year, month, day, 12, 0, 0, 0])
+  if (!time.isValid()) throw new Error(failMsg)
+  return time.unix()
 }
 
 const featuredItem = html => {
@@ -49,30 +69,8 @@ const featuredItem = html => {
   return item
 }
 
-const extractSaleInfo = (html, item) => {
-  const $ = cheerio.load(html)
-  const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
 
-  item.buyLink = item.saleOpen = item.saleStartTime = null
-  let buyLink = $(linkBox).children().first().attr('href')
-  if (buyLink) {
-    item.buyLink = buyLink
-    item.saleOpen = true
-    return item
-  }
 
-  buyLink = $(linkBox.children('p')).find('a').attr('href')
-  if (buyLink) {
-    item.buyLink = buyLink
-    item.saleOpen = false
-
-    item.saleStartTime = **
-
-      return item
-  }
-
-  return item
-}
 
 const buyLink = str => {
   const matches = /^https?:\/\/www\.operadeparis\.fr\/billetterie\/([0-9]+-[^\/]+)$/.exec(str.trim())
@@ -80,12 +78,25 @@ const buyLink = str => {
   return matches[1]
 }
 
+const strClean = str => {
+  return str.replace(/\s\s+/g, ' ').trim().toLowerCase()
+}
+
+const performanceDate = (day, hour) => {
+  console.log("got ", day, hour)
+  const failMsg = `Unable to parse performance date "${day}" "${hour}"`
+  const parts = strClean(day).split(' ')
+
+  if (parts.length != 4) throw Error(failMsg)
+  if (!MONTHS.includes(parts[2])) throw Error(failMsg)
+  let [d, m, y] = [parseInt(parts[1], MONTHS.indexOf(parts[2], parts[3]))]
+
+  ****
+}
+
 const locationString = str => {
   let start, end, loc, parts, dateParts, startParts, endParts
   const failMsg = `Unable to parse location string "${str}"`
-
-  const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-                  'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
 
   parts = str.replace(/\s\s+/g, ' ').trim().split(' — ')
   if (parts.length != 2) throw new Error(failMsg)
@@ -103,15 +114,15 @@ const locationString = str => {
     if (endParts.length != 3) throw new Error(failMsg)
     if (!startParts.length || startParts.length > 3) throw new Error(failMsg)
 
-    if (!months.includes(endParts[1].trim())) throw new Error(failMsg)
-    let [year, month, day] = [parseInt(endParts[2]), months.indexOf(endParts[1]), parseInt(endParts[0])]
+    if (!MONTHS.includes(endParts[1].trim())) throw new Error(failMsg)
+    let [year, month, day] = [parseInt(endParts[2]), MONTHS.indexOf(endParts[1]), parseInt(endParts[0])]
     end = moment.utc([year, month, day, 12, 0, 0, 0])
     if (!end.isValid) throw new Error(failMsg)
 
     day = parseInt(startParts[0])
     if (startParts.length >= 2 ) {
-      if (!months.includes(startParts[1].trim())) throw new Error(failMsg)
-      month = months.indexOf(startParts[1])
+      if (!MONTHS.includes(startParts[1].trim())) throw new Error(failMsg)
+      month = MONTHS.indexOf(startParts[1])
     }
     if (startParts.length == 3) {
       year = parseInt(startParts[2])
@@ -127,8 +138,8 @@ const locationString = str => {
   if (dateParts) {
     startParts = dateParts[1].split(' ')
     if (startParts.length != 3) throw new Error(failMsg)
-    if (!months.includes(startParts[1].trim())) throw new Error(failMsg)
-    const [day, month, year] = [parseInt(startParts[0]), months.indexOf(startParts[1]), parseInt(startParts[2])]
+    if (!MONTHS.includes(startParts[1].trim())) throw new Error(failMsg)
+    const [day, month, year] = [parseInt(startParts[0]), MONTHS.indexOf(startParts[1]), parseInt(startParts[2])]
     start = moment.utc([year, month, day, 12, 0, 0, 0])
     if (!start.isValid()) throw new Error(failMsg)
     return [start.unix(), start.unix(), loc]
@@ -138,4 +149,5 @@ const locationString = str => {
 }
 
 
-module.exports = {featuredItem, locationString, buyLink, showType, extractBuyInfo}
+module.exports = {featuredItem, locationString, buyLink, showType, parseSaleDate, performanceDate}
+
