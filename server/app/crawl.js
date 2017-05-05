@@ -4,6 +4,7 @@ const cheerio = require('cheerio')
 const logging = require('./lib/logging')
 const parsing = require('./lib/utils.parsing')
 const inspect = require('util').inspect
+const moment = require('moment')
 
 const urls = [
   'https://www.operadeparis.fr/saison-16-17/opera',
@@ -12,12 +13,24 @@ const urls = [
 
 const PIPELINE_ERRORS = []
 
+const STATS = {
+  requests: 0,
+  start: moment.utc().unix(),
+  end: 0
+}
+
 // Async fetch
-const getHtml = url => {
+const getHtml = (url, wrapper) => {
+  STATS.requests += 1
   const doFetch = fetch(url)
-    .then(res =>res.text())
+    .then(res => res.text())
+    .then(html => {
+      wrapper.html = html
+      return wrapper
+    })
     .catch(err => {
-      PIPELINE_ERRORS.push(new Error(`Error when talking to URL: ${url}`))
+      err.message = `HTML Fetching ${url}: ${err.message}`
+      PIPELINE_ERRORS.push(err)
       return null
     })
 
@@ -26,35 +39,14 @@ const getHtml = url => {
 
 
 const extractItems = (html, context) => {
-  console.log('received %s chars', html.length)
   const $ = cheerio.load(html)
   const featured = $('body > div.content-wrapper > div.grid-row-prefooter > ul.FeaturedList > li > div.FeaturedList__card > div.FeaturedList__card-content')
   const items = []
   featured.each((i, item) => {
-    const props = {}
     try {
-      props.title = $(item).find('div.FeaturedList__card-title > a.title-oeuvre > span').text().trim()
-      if (!props.title) throw new Error(`No title found for item ${i}`)
-
-      props.url = $(item).find('div.FeaturedList__card-title > a.title-oeuvre').attr('href')
-      if (!props.url) throw new Error(`No showLink found for item ${i}`)
-
-      props.author = $(item).find('div.FeaturedList__card-title > p > span').text().trim()
-      if (!props.author) throw new Error(`No author found for item ${i}`)
-
-      props.type = parseType($(item).find('div.FeaturedList__card-title > p').text().replace(props.author, ''))
-      if (!props.type) throw new Error(`Unknown type for item ${i}`)
-
-      const locationStr = $(item).find('div.FeaturedList__card-metadata > div.FeaturedList__metadata-location').text().trim()
-
-      const [startDate, endDate, location] = parsing.locationString(locationStr)
-      Object.assign(props, {startDate, endDate, location})
-      if (props.startDate > props.endDate || !props.location) throw new Error(`Unable to parse location for item ${i}`)
-      //props.buyLink = $(item).find('a.FeaturedList__reserve-btn').attr('href') || ''
-      // if buyLink, extract 'id' and 'slug'
-      //props.slug = ''
-      items.push(props)
+      items.push(parsing.featuredItem($(item)))
     } catch (err) {
+      err.message = `Item extraction: ${err.message}`
       PIPELINE_ERRORS.push(err)
     }
   })
@@ -74,7 +66,13 @@ const obs = Rx.Observer.create(
   x => console.log('onNext:', inspect(x)),
   e => console.log('onError:', e),
   () => {
-    console.log('onCompleted, %s errors', PIPELINE_ERRORS.length)
+    STATS.end = moment.utc().unix()
+    console.log(
+      'Completed: %d requests in %s seconds, %s errors',
+      STATS.requests,
+      moment.duration(STATS.end - STATS.start, 'seconds').seconds(),
+      PIPELINE_ERRORS.length)
+    PIPELINE_ERRORS.forEach(err => console.error(err))
   }
 )
 
@@ -83,10 +81,15 @@ const obs = Rx.Observer.create(
 
 
 // Handle bad URLs
-const pipeline = Rx.Observable.from(urls)
-  .flatMap(url => getHtml(url))
-  .flatMap(html => extractItems(html))
 
+
+const pipeline = Rx.Observable.from(urls)
+  .flatMap(url => getHtml(url, {}))
+  .flatMap(obj => extractItems(obj.html))
+  .flatMap(item => getHtml(item.url, {item}))
+  .map(obj => parsing.extractSaleInfo(obj.html, obj.item))
+//.map(item => saveItem(item))
+//  filter(item => )
 // call extract on each html and yield array of items
 // flatMap -> each item -> call link ->
 // flatMap -> each link, + props in object

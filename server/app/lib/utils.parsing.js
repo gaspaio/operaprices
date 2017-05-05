@@ -1,6 +1,7 @@
 const moment = require('moment')
+const cheerio = require('cheerio')
 
-module.exports.showType = str => {
+const showType = str => {
   const type = str.replace(/\s+/g, '')
   let ret = ''
   switch (type) {
@@ -17,32 +18,63 @@ module.exports.showType = str => {
   return ret
 }
 
-module.exports.featuredItem = html => {
+const link2slug = href => {
+  const matches = /^https?:\/\/www\.operadeparis\.fr\/.*\/([^\/]+)$/.exec(href.trim())
+  if (!matches) throw Error(`Unable to get slug from link: ${href}`)
+  return matches[1]
+}
+
+const featuredItem = html => {
   const item = {}
 
-  item.title = $(html).find('div.FeaturedList__card-title > a.title-oeuvre > span').text().trim()
+  item.title = html.find('div.FeaturedList__card-title > a.title-oeuvre > span').text().trim()
   if (!item.title) throw new Error(`No title found.`)
 
-  item.url = $(html).find('div.FeaturedList__card-title > a.title-oeuvre').attr('href')
+  item.url = html.find('div.FeaturedList__card-title > a.title-oeuvre').attr('href')
   if (!item.url) throw new Error(`No showLink found.`)
+  item.slug = link2slug(item.url)
 
-  item.author = $(html).find('div.FeaturedList__card-title > p > span').text().trim()
+  item.author = html.find('div.FeaturedList__card-title > p > span').text().trim()
   if (!item.author) throw new Error(`No author found.`)
 
-  item.type = parseType($(html).find('div.FeaturedList__card-title > p').text().replace(item.author, ''))
+  item.type = showType(html.find('div.FeaturedList__card-title > p').text().replace(item.author, ''))
   if (!item.type) throw new Error(`Unknown type.`)
 
-  const locationStr = $(html).find('div.FeaturedList__card-metadata > div.FeaturedList__metadata-location').text().trim()
+  const locationStr = html.find('div.FeaturedList__card-metadata > div.FeaturedList__metadata-location').text().trim()
   const [startDate, endDate, location] = locationString(locationStr)
   Object.assign(item, {startDate, endDate, location})
   if (item.startDate > item.endDate || !item.location) throw new Error(`Unable to parse location.`)
       //props.buyLink = $(item).find('a.FeaturedList__reserve-btn').attr('href') || ''
       // if buyLink, extract 'id' and 'slug'
-      //props.slug = ''
   return item
 }
 
-module.exports.buyLink = str => {
+const extractSaleInfo = (html, item) => {
+  const $ = cheerio.load(html)
+  const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
+
+  item.buyLink = item.saleOpen = item.saleStartTime = null
+  let buyLink = $(linkBox).children().first().attr('href')
+  if (buyLink) {
+    item.buyLink = buyLink
+    item.saleOpen = true
+    return item
+  }
+
+  buyLink = $(linkBox.children('p')).find('a').attr('href')
+  if (buyLink) {
+    item.buyLink = buyLink
+    item.saleOpen = false
+
+    item.saleStartTime = **
+
+      return item
+  }
+
+  return item
+}
+
+const buyLink = str => {
   const matches = /^https?:\/\/www\.operadeparis\.fr\/billetterie\/([0-9]+-[^\/]+)$/.exec(str.trim())
   if (!matches || matches.length != 2) throw new Error(`Unable to parse buyLink for item ${i}`)
   return matches[1]
@@ -106,4 +138,4 @@ const locationString = str => {
 }
 
 
-module.exports = {featuredItem}
+module.exports = {featuredItem, locationString, buyLink, showType, extractBuyInfo}
