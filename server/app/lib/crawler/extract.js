@@ -1,0 +1,126 @@
+const fetch = require('node-fetch')
+const cheerio = require('cheerio')
+const Rx = require('rx')
+
+const reg = require('./registry')
+const utils = require('./utils')
+
+const getHtml = module.exports.getHtml = (url, wrapper) => {
+  if (!url) {
+    wrapper.html = null
+    return Promise.resolve(wrapper)
+  }
+
+  reg.request()
+  return fetch(url)
+    .then(res => res.text())
+    .then(html => {
+      wrapper.html = html
+      return wrapper
+    })
+    .catch(err => {
+      err.message = `HTML Fetching ${url}: ${err.message}`
+      reg.addError(err)
+      wrapper.html = null
+      return wrapper
+    })
+}
+
+const featuredItems = module.exports.featuredItems = (html, context) => {
+  const $ = cheerio.load(html)
+  const featured = $('body > div.content-wrapper > div.grid-row-prefooter > ul.FeaturedList > li > div.FeaturedList__card > div.FeaturedList__card-content')
+  const items = []
+  featured.each((i, item) => {
+    try {
+      items.push(utils.featuredItem($(item)))
+    } catch (err) {
+      err.message = `Item extraction: ${err.message}`
+      reg.addError(err)
+    }
+  })
+
+  if (!items.length) {
+    return Rx.Observable.empty()
+  }
+
+  return items
+}
+
+const prices = module.exports.prices = (html, item) => {
+  item.prices = {}
+  if (!html) return item
+
+  $ = cheerio.load(html)
+  $('body > div.content-wrapper > section.grid-container > ul.PerformanceList > li').each((i, elem) => {
+    // The past representations are still in the HTML but have display: None and empty tables
+    if ($(elem).find('div.PerformanceList__item__table').text().indexOf('Représentation passée') !== -1) {
+      return
+    }
+
+    const day = $(elem).find('div.PerformanceList__item__metadata > div.PerformanceDate').attr('title')
+    const hour = $(elem).find('div.PerformanceList__item__metadata > div.PerformanceDate__extra > p.PerformanceDate__hours').text()
+    let date
+    try {
+      date = utils.performanceDate(day, hour)
+    } catch (err) {
+      reg.addError(`Price extract for ${item.buyLink} failed. ${err.message}`)
+      return
+    }
+
+    item.prices[date] = []
+    $(elem).find('div.PerformanceList__item__table > div > ol > li.PerformanceTable__rows').each((i, row) => {
+      try {
+        const available = $(row).attr('class').split(' ').indexOf('unavailable') === -1
+        const cat = $(row).children('span.PerformanceTable__label').first().text().trim()
+        const price = parseInt($(row).children('span.PerformanceTable__price').first().text().trim().split(' ')[0])
+        item.prices[date].push({available, cat, price})
+      } catch (err) {
+        reg.addError(`price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`)
+      }
+    })
+  })
+
+  return item
+}
+
+const saleInfo = module.exports.saleInfo = (html, item) => {
+  item.buyLink = item.saleOpen = item.saleStartTime = null
+
+  if (!html) return item
+
+  const $ = cheerio.load(html)
+  const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
+
+  let buyLink = $(linkBox).children().first().attr('href')
+  if (buyLink) {
+    item.buyLink = buyLink
+    item.saleOpen = true
+    return item
+  }
+
+  const buyBox = $(linkBox).children().first()
+  if (!buyBox) {
+    reg.addError(new Error(`URL ${item.url} doesnt contain a buy box nor a buy link. Investigate further.`))
+    return item
+  }
+
+  const url = $(buyBox).find('a').attr('href').trim()
+  if (!url) {
+    reg.addError(new Error(`URL ${item.url} contains a buy box but no link inside. Investigate further.`))
+    return item
+  }
+
+  item.buyLink = url
+  item.saleOpen = false
+
+  try {
+    item.saleStartTime = utils.saleDate($(buyBox).text())
+  } catch (err) {
+    err.message = `Url ${url}: ${err.message}`
+    reg.addError(err)
+  }
+
+  return item
+}
+
+

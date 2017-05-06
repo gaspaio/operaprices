@@ -1,4 +1,5 @@
 const moment = require('moment')
+require('moment-timezone')
 const cheerio = require('cheerio')
 
 const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
@@ -28,7 +29,7 @@ const link2slug = href => {
   return matches[1]
 }
 
-const parseSaleDate = str => {
+const saleDate = str => {
   // Ouverture &#xE0; la vente le 30 mai 2017<br><a href="https://www.operadeparis.fr/billetterie/230-pelleas-et-melisande">Voir les s&#xE9;ances</a>
   const failMsg = `Unable to parse date sale string "${str}"`
 
@@ -83,15 +84,20 @@ const strClean = str => {
 }
 
 const performanceDate = (day, hour) => {
-  console.log("got ", day, hour)
   const failMsg = `Unable to parse performance date "${day}" "${hour}"`
-  const parts = strClean(day).split(' ')
+  let parts = strClean(day).split(' ')
 
   if (parts.length != 4) throw Error(failMsg)
   if (!MONTHS.includes(parts[2])) throw Error(failMsg)
-  let [d, m, y] = [parseInt(parts[1], MONTHS.indexOf(parts[2], parts[3]))]
+  let [d, m, y] = [parseInt(parts[1]), MONTHS.indexOf(parts[2]), parseInt(parts[3])]
+  parts = strClean(hour).split('h')
+  if (parts.length != 2) throw Error(failMsg)
+  let [h, mm] = [parseInt(parts[0]), parseInt(parts[1])]
 
-  ****
+  const time = moment.tz([y, m, d, h, mm], 'Europe/Paris')
+  if (!time.isValid()) throw Error(failMsg)
+
+  return time.utc().unix()
 }
 
 const locationString = str => {
@@ -149,5 +155,5 @@ const locationString = str => {
 }
 
 
-module.exports = {featuredItem, locationString, buyLink, showType, parseSaleDate, performanceDate}
+module.exports = {featuredItem, locationString, buyLink, showType, saleDate, performanceDate}
 
