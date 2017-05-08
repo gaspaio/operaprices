@@ -1,19 +1,23 @@
 DROP TABLE IF EXISTS show;
 CREATE TABLE show (
     id INTEGER PRIMARY KEY,
-    type TEXT,
     slug TEXT UNIQUE,
+    type TEXT,
     title TEXT,
     author TEXT,
     location TEXT,
-    start_date INTEGER,
-    end_date INTEGER,
-    created_at INTEGER,
-    updated_at INTEGER
+    url TEXT,
+    buyUrl TEXT,
+    saleStartDate INTEGER,
+    saleOpen INTEGER,
+    startDate INTEGER,
+    endDate INTEGER,
+    createdAt INTEGER,
+    updatedAt INTEGER
 );
 
-CREATE INDEX show_ix_start_date ON show (start_date);
-CREATE INDEX show_ix_end_date ON show (end_date);
+CREATE INDEX show_ix_start_date ON show (startDate);
+CREATE INDEX show_ix_end_date ON show (endDate);
 
 DROP TABLE IF EXISTS performance;
 CREATE TABLE performance (

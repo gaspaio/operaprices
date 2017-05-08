@@ -8,13 +8,12 @@ const Show = require('./models/Show')
 const uuid = require('uuid')
 const basePath = path.join('__dirname', '..', 'db')
 
-
 module.exports.CRAWL_DONE = 'DONE'
 module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
   return Promise.resolve()
-    .then(() => db.open(path.join(basePath, config.get('db.name'))))
+    .then(() => db.open(path.join(basePath, config.get('db.name')), {cached: true}))
   //.then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
 }
 

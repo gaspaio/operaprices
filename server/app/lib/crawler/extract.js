@@ -85,16 +85,16 @@ const prices = module.exports.prices = (html, item) => {
 }
 
 const saleInfo = module.exports.saleInfo = (html, item) => {
-  item.buyLink = item.saleOpen = item.saleStartTime = null
+  item.buyUrl = item.saleOpen = item.saleStartDate = null
 
   if (!html) return item
 
   const $ = cheerio.load(html)
   const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
 
-  let buyLink = $(linkBox).children().first().attr('href')
-  if (buyLink) {
-    item.buyLink = buyLink
+  let buyUrl = $(linkBox).children().first().attr('href')
+  if (buyUrl) {
+    item.buyUrl = buyUrl
     item.saleOpen = true
     return item
   }
@@ -111,11 +111,11 @@ const saleInfo = module.exports.saleInfo = (html, item) => {
     return item
   }
 
-  item.buyLink = url
+  item.buyUrl = url
   item.saleOpen = false
 
   try {
-    item.saleStartTime = utils.saleDate($(buyBox).text())
+    item.saleStartDate = utils.saleDate($(buyBox).text())
   } catch (err) {
     err.message = `Url ${url}: ${err.message}`
     Crawl.get().addError(err)

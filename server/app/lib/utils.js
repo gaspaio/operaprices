@@ -16,6 +16,10 @@ module.exports.map2object = mm => {
   return ret
 }
 
+module.exports.snake2Camel = s => s.replace(/(\_\w)/g, m => m[1].toUpperCase())
+
+module.exports.sqlClean = s => s ? s.trim().replace(/'/g, '') : s
+
 module.exports.findCheapestPerformances = (priceMap, lastCrawlTime) => {
   // assumes each price series is sorted by crawl time
   let data = [] // ([perf, price, cat])

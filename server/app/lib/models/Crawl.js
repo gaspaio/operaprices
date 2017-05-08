@@ -39,8 +39,9 @@ class Crawl {
       err = Error(`Param should be instance of Error: ${err}`)
     }
 
-    const e = {message: err.message, stack: err.stack.split('\n').map(s => trim())}
+    console.log(err)
 
+    const e = {message: err.message, stack: err.stack.split('\n').map(s => s.trim())}
     this.errors.push(e)
   }
 

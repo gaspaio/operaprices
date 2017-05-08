@@ -1,11 +1,11 @@
 const Rx = require('rx')
 // const logging = require('./lib/logging')
 const extract = require('./extract')
-const reg = require('./registry')
 const inspect = require('util').inspect
 const moment = require('moment')
 const db = require('../db')
 const Crawl = require('../models/Crawl')
+const Show = require('../models/Show')
 
 const itemStats = item => {
   const c = Crawl.get()
@@ -23,6 +23,25 @@ const itemStats = item => {
   st[item.type] = item.type in st ? st[item.type] + 1 : 1
   c.setStat('types', st)
 
+  return item
+}
+
+const persistItem = item => {
+
+  return Show
+    .loadBySlug(item.slug)
+    .then(show => {
+      if (!show) show = Show.createFromItem(item)
+      else show.updateFromItem(item)
+      return show.save()
+    })
+    .catch(err => Crawl.get().addError(err))
+    .then(() => item)
+
+  // for each perf
+  // - persist perf
+  // - persist prices
+  //
 }
 
 const doCrawl = urls => {
@@ -41,9 +60,14 @@ const doCrawl = urls => {
     .flatMap(obj => extract.featuredItems(obj.html))
     .flatMap(item => extract.getHtml(item.url, {item}))
     .map(obj => extract.saleInfo(obj.html, obj.item))
-    .flatMap(item => extract.getHtml(item.buyLink, {item}))
+    .flatMap(item => extract.getHtml(item.buyUrl, {item}))
     .map(obj => extract.prices(obj.html, obj.item))
-    .do(item => itemStats(item))
+    .flatMap(item => persistItem(item))
+    .do(
+      item => itemStats(item),
+      err => console.log('Error', err),
+      () => console.log('Pipeline completed')
+    )
 
   // const subscription = pipeline.subscribe(obs)
 
@@ -53,7 +77,7 @@ const doCrawl = urls => {
 module.exports.crawl = () => {
   const urls = [
     'https://www.operadeparis.fr/saison-16-17/opera',
-    'https://www.operadeparis.fr/saison-17-18/opera'
+    // 'https://www.operadeparis.fr/saison-17-18/opera'
   ]
 
   db.open()
@@ -65,5 +89,6 @@ module.exports.crawl = () => {
       Crawl.get().addError(err)
       return Crawl.stop()
     })
+    .catch(err => console.log('catch err', err))
 }
 
