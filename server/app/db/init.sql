@@ -40,9 +40,11 @@ CREATE TABLE price (
 
 DROP TABLE IF EXISTS crawl;
 CREATE TABLE crawl (
-    id TEXT PRIMARY KEY,
-    time INTEGER UNIQUE,
+    id INTEGER PRIMARY KEY,
+    start_time INTEGER UNIQUE,
+    end_time INTEGER DEFAULT 0,
     status TEXT,
-    comments TEXT DEFAULT ''
+    stats TEXT DEFAULT '{}',
+    errors TEXT DEFAULT '[]'
 );
 

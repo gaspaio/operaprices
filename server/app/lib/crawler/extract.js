@@ -1,8 +1,7 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const Rx = require('rx')
-
-const reg = require('./registry')
+const Crawl = require('../models/Crawl')
 const utils = require('./utils')
 
 const getHtml = module.exports.getHtml = (url, wrapper) => {
@@ -11,7 +10,7 @@ const getHtml = module.exports.getHtml = (url, wrapper) => {
     return Promise.resolve(wrapper)
   }
 
-  reg.request()
+  Crawl.get().incStat('requests')
   return fetch(url)
     .then(res => res.text())
     .then(html => {
@@ -20,7 +19,7 @@ const getHtml = module.exports.getHtml = (url, wrapper) => {
     })
     .catch(err => {
       err.message = `HTML Fetching ${url}: ${err.message}`
-      reg.addError(err)
+      Crawl.get().addError(err)
       wrapper.html = null
       return wrapper
     })
@@ -35,7 +34,7 @@ const featuredItems = module.exports.featuredItems = (html, context) => {
       items.push(utils.featuredItem($(item)))
     } catch (err) {
       err.message = `Item extraction: ${err.message}`
-      reg.addError(err)
+      Crawl.get().addError(err)
     }
   })
 
@@ -63,7 +62,8 @@ const prices = module.exports.prices = (html, item) => {
     try {
       date = utils.performanceDate(day, hour)
     } catch (err) {
-      reg.addError(`Price extract for ${item.buyLink} failed. ${err.message}`)
+      err.message = `Price extract for ${item.buyLink} failed. ${err.message}`
+      Crawl.get().addError(err)
       return
     }
 
@@ -75,7 +75,8 @@ const prices = module.exports.prices = (html, item) => {
         const price = parseInt($(row).children('span.PerformanceTable__price').first().text().trim().split(' ')[0])
         item.prices[date].push({available, cat, price})
       } catch (err) {
-        reg.addError(`price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`)
+        err.message = `price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`
+        Crawl.get().addError(err)
       }
     })
   })
@@ -100,13 +101,13 @@ const saleInfo = module.exports.saleInfo = (html, item) => {
 
   const buyBox = $(linkBox).children().first()
   if (!buyBox) {
-    reg.addError(new Error(`URL ${item.url} doesnt contain a buy box nor a buy link. Investigate further.`))
+    Crawl.get().addError(Error(`URL ${item.url} doesnt contain a buy box nor a buy link. Investigate further.`))
     return item
   }
 
   const url = $(buyBox).find('a').attr('href').trim()
   if (!url) {
-    reg.addError(new Error(`URL ${item.url} contains a buy box but no link inside. Investigate further.`))
+    Crawl.get().addError(Error(`URL ${item.url} contains a buy box but no link inside. Investigate further.`))
     return item
   }
 
@@ -117,10 +118,9 @@ const saleInfo = module.exports.saleInfo = (html, item) => {
     item.saleStartTime = utils.saleDate($(buyBox).text())
   } catch (err) {
     err.message = `Url ${url}: ${err.message}`
-    reg.addError(err)
+    Crawl.get().addError(err)
   }
 
   return item
 }
-
 

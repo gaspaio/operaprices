@@ -4,28 +4,36 @@ const extract = require('./extract')
 const reg = require('./registry')
 const inspect = require('util').inspect
 const moment = require('moment')
+const db = require('../db')
+const Crawl = require('../models/Crawl')
 
-const operaUrls = [
-  'https://www.operadeparis.fr/saison-16-17/opera',
-  'https://www.operadeparis.fr/saison-17-18/opera'
-]
+const itemStats = item => {
+  const c = Crawl.get()
 
-module.exports.crawl = urls => {
-  const obs = Rx.Observer.create(
+  c.incStat('total_items')
+
+  c.incStat('total_performances', Object.keys(item).length)
+  if (item.saleOpen) c.incStat('on_sale')
+
+  const sl = c.getStat('locations', {})
+  sl[item.location] = item.location in sl ? sl[item.location] + 1 : 1
+  c.setStat('locations', sl)
+
+  const st = c.getStat('types', {})
+  st[item.type] = item.type in st ? st[item.type] + 1 : 1
+  c.setStat('types', st)
+
+}
+
+const doCrawl = urls => {
+  /*  const obs = Rx.Observer.create(
     x => console.log('onNext:', inspect(x)),
     e => console.log('onError:', e),
     () => {
-      reg.addStat('end', moment.utc().unix())
-      console.log(
-        'Completed: %d requests in %s seconds, %s errors',
-        reg.getStats().requests,
-        moment.duration(reg.getStats().end - reg.getStats().start, 'seconds').seconds(),
-        reg.getErrors().length
-      )
-
-      reg.getErrors().forEach(err => console.error(err))
     }
   )
+  */
+  // Set the crawl to Start
 
   const pipeline = Rx.Observable.from(urls)
     .flatMap(url => extract.getHtml(url, {}))
@@ -35,9 +43,27 @@ module.exports.crawl = urls => {
     .map(obj => extract.saleInfo(obj.html, obj.item))
     .flatMap(item => extract.getHtml(item.buyLink, {item}))
     .map(obj => extract.prices(obj.html, obj.item))
+    .do(item => itemStats(item))
 
-  const subscription = pipeline.subscribe(obs)
+  // const subscription = pipeline.subscribe(obs)
 
-  return pipeline
+  return pipeline.toPromise()
+}
+
+module.exports.crawl = () => {
+  const urls = [
+    'https://www.operadeparis.fr/saison-16-17/opera',
+    'https://www.operadeparis.fr/saison-17-18/opera'
+  ]
+
+  db.open()
+    .then(() => Crawl.start())
+    .then(() => doCrawl(urls))
+    .then(() => Crawl.stop())
+    .then(() => console.log(Crawl.get().toString()))
+    .catch(err => {
+      Crawl.get().addError(err)
+      return Crawl.stop()
+    })
 }
 

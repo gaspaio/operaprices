@@ -2,10 +2,15 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('config')
 const db = require('sqlite')
+const moment = require('moment')
 const logging = require('./logging')
-const Show = require('../models/Show'
-)
+const Show = require('./models/Show')
+const uuid = require('uuid')
 const basePath = path.join('__dirname', '..', 'db')
+
+
+module.exports.CRAWL_DONE = 'DONE'
+module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
   return Promise.resolve()

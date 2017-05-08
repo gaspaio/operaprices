@@ -1,4 +1,4 @@
-const utils = require('../lib/utils')
+const utils = require('../utils')
 
 module.exports = class Show {
   constructor (row = {}) {
