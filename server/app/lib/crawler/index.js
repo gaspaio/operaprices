@@ -43,8 +43,7 @@ const persistShow = item => {
 }
 
 const persistPerformance = (show, date, prices) => {
-  const p = (new Performance({showId: show.id, date}))
-    .upsert()
+  const p = db.upsertPerformance(new Performance({showId: show.id, date})).
     .then(performance => {
       return {performance, prices}
     })
@@ -56,17 +55,18 @@ const persistPerformance = (show, date, prices) => {
   return Rx.Observable.fromPromise(p).filter(obj => obj !== null)
 }
 
-const persistPrices = (performance, prices) => {
-  return Promise.all(prices.map(p => {
-    return (new Price({
+const persistPrices = (performance, prices) => Promise.all(
+  prices.map(
+    p => db.insertPrice(new Price({
       crawlId: Crawl.get().id,
       performanceId: performance.id,
       category: p.cat,
       price: p.price,
       available: p.available
-    })).save()
-  }))
-}
+    }))
+  )
+)
+
 
 const doCrawl = urls => {
   /*  const obs = Rx.Observer.create(
