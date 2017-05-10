@@ -64,7 +64,7 @@ const prices = module.exports.prices = (html, item) => {
     } catch (err) {
       err.message = `Price extract for ${item.buyLink} failed. ${err.message}`
       Crawl.get().addError(err)
-      return
+      return item
     }
 
     item.prices[date] = []

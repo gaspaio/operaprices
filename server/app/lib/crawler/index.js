@@ -6,6 +6,8 @@ const moment = require('moment')
 const db = require('../db')
 const Crawl = require('../models/Crawl')
 const Show = require('../models/Show')
+const Performance = require('../models/Performance')
+const Price = require('../models/Price')
 
 const itemStats = item => {
   const c = Crawl.get()
@@ -26,22 +28,44 @@ const itemStats = item => {
   return item
 }
 
-const persistItem = item => {
-
-  return Show
-    .loadBySlug(item.slug)
+const persistShow = item => {
+  const p = Show
+    .upsertFromItem(item)
     .then(show => {
-      if (!show) show = Show.createFromItem(item)
-      else show.updateFromItem(item)
-      return show.save()
+      return {item, show}
     })
-    .catch(err => Crawl.get().addError(err))
-    .then(() => item)
+    .catch(err => {
+      Crawl.get().addError(err)
+      return null
+    })
 
-  // for each perf
-  // - persist perf
-  // - persist prices
-  //
+  return Rx.Observable.fromPromise(p).filter(obj => obj !== null)
+}
+
+const persistPerformance = (show, date, prices) => {
+  const p = (new Performance({showId: show.id, date}))
+    .upsert()
+    .then(performance => {
+      return {performance, prices}
+    })
+    .catch(err => {
+      Crawl.get().addError(err)
+      return null
+    })
+
+  return Rx.Observable.fromPromise(p).filter(obj => obj !== null)
+}
+
+const persistPrices = (performance, prices) => {
+  return Promise.all(prices.map(p => {
+    return (new Price({
+      crawlId: Crawl.get().id,
+      performanceId: performance.id,
+      category: p.cat,
+      price: p.price,
+      available: p.available
+    })).save()
+  }))
 }
 
 const doCrawl = urls => {
@@ -62,12 +86,15 @@ const doCrawl = urls => {
     .map(obj => extract.saleInfo(obj.html, obj.item))
     .flatMap(item => extract.getHtml(item.buyUrl, {item}))
     .map(obj => extract.prices(obj.html, obj.item))
-    .flatMap(item => persistItem(item))
-    .do(
-      item => itemStats(item),
-      err => console.log('Error', err),
-      () => console.log('Pipeline completed')
-    )
+    .do(item => itemStats(item))
+
+    // Persist everything
+    .flatMap(item => persistShow(item))
+    .flatMap(obj => Object.keys(obj.item.prices).map(date => {
+      return {show: obj.show, date, prices: obj.item.prices[date]}
+    }))
+    .flatMap(obj => persistPerformance(obj.show, obj.date, obj.prices))
+    .flatMap(obj => persistPrices(obj.performance, obj.prices))
 
   // const subscription = pipeline.subscribe(obs)
 
@@ -77,7 +104,7 @@ const doCrawl = urls => {
 module.exports.crawl = () => {
   const urls = [
     'https://www.operadeparis.fr/saison-16-17/opera',
-    // 'https://www.operadeparis.fr/saison-17-18/opera'
+    'https://www.operadeparis.fr/saison-17-18/opera'
   ]
 
   db.open()

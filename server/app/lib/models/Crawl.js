@@ -7,8 +7,8 @@ let CURR_CRAWL
 class Crawl {
   constructor (row) {
     this.id = row.id
-    this.startTime = row.start_time
-    this.endTime = row.end_time
+    this.startTime = row.startTime
+    this.endTime = row.endTime
 
     if (!(row.status in Crawl.statuses)) {
       throw Error(`Unknown status row value "${row.status}"`)
@@ -23,7 +23,7 @@ class Crawl {
     this.endTime = time || moment.utc().unix()
     this.status = Crawl.statuses.CRAWL_DONE
     const errors = JSON.stringify(this.errors).replace(/'/g, '')
-    const q = `UPDATE OR FAIL crawl SET (end_time, status, stats, errors)=(${this.endTime}, '${this.status}', '${JSON.stringify(this.stats)}', '${errors}')`
+    const q = `UPDATE OR FAIL crawl SET (endTime, status, stats, errors)=(${this.endTime}, '${this.status}', '${JSON.stringify(this.stats)}', '${errors}') WHERE id=${this.id}`
     return db
       .run(q)
       .then(() => this)
@@ -81,7 +81,7 @@ class Crawl {
     const startTime = time || moment.utc().unix()
     const status = Crawl.statuses.CRAWL_STARTED
 
-    const q = `INSERT INTO crawl (start_time, status) VALUES (${startTime}, '${status}')`
+    const q = `INSERT INTO crawl (startTime, status) VALUES (${startTime}, '${status}')`
     return db
       .run(q)
       .then(stmt => Crawl.load(stmt.lastID))

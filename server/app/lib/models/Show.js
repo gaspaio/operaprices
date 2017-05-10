@@ -23,19 +23,6 @@ module.exports = class Show {
     return this.endDate >= utils.nowDate()
   }
 
-  static loadBySlug (slug) {
-    return database.db
-      .get(`SELECT * FROM show WHERE slug='${slug}'`)
-      .then(row => {
-        if (!row) return row
-        return new Show(row)
-      })
-  }
-
-  static createFromItem (item) {
-    return new Show(item)
-  }
-
   updateFromItem (item) {
     ['startDate', 'endDate', 'saleOpen', 'saleStartDate'].forEach(f => {
       if (!item[f]) return
@@ -43,6 +30,21 @@ module.exports = class Show {
     })
 
     // Throw err if title, type, location, author changed ...
+    return this
+  }
+
+  static upsertFromItem (item) {
+    // LoadBySlug
+    return database.db
+      .get(`SELECT * FROM show WHERE slug='${item.slug}'`)
+      .then(row => {
+        // Update from item
+        let show
+        if (!row) show = new Show(item)
+        else show = (new Show(row)).updateFromItem(item)
+
+        return show.save()
+      })
   }
 
   save (nowDate = null) {
@@ -75,7 +77,7 @@ module.exports = class Show {
       q = `UPDATE OR FAIL show SET (${FIELDS})=(${values}) WHERE id = ${this.id}`
     }
 
-    database.db.run(q).then(stmt => {
+    return database.db.run(q).then(stmt => {
       if (!this.id) {
         this.id = stmt.lastID
       }
@@ -83,22 +85,5 @@ module.exports = class Show {
       return this
     })
   }
-
-    /*
-  toObject () {
-    return {
-      id: this.id,
-      slug: this.slug,
-      title: this.title,
-      author: this.author,
-      location: this.location,
-      startDate: this.startDate,
-      endDate: this.endDate,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      active: this.active
-    }
-  }
-  */
 }
 
