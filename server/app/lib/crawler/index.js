@@ -29,8 +29,8 @@ const itemStats = item => {
 }
 
 const persistShow = item => {
-  const p = Show
-    .upsertFromItem(item)
+  const p = db
+    .upsertShow(item)
     .then(show => {
       return {item, show}
     })
@@ -43,7 +43,8 @@ const persistShow = item => {
 }
 
 const persistPerformance = (show, date, prices) => {
-  const p = db.upsertPerformance(new Performance({showId: show.id, date})).
+  const p = db
+    .upsertPerformance(new Performance({showId: show.id, date}))
     .then(performance => {
       return {performance, prices}
     })
@@ -56,8 +57,8 @@ const persistPerformance = (show, date, prices) => {
 }
 
 const persistPrices = (performance, prices) => Promise.all(
-  prices.map(
-    p => db.insertPrice(new Price({
+  prices.map(p => db
+    .insertPrice(new Price({
       crawlId: Crawl.get().id,
       performanceId: performance.id,
       category: p.cat,
@@ -69,15 +70,6 @@ const persistPrices = (performance, prices) => Promise.all(
 
 
 const doCrawl = urls => {
-  /*  const obs = Rx.Observer.create(
-    x => console.log('onNext:', inspect(x)),
-    e => console.log('onError:', e),
-    () => {
-    }
-  )
-  */
-  // Set the crawl to Start
-
   const pipeline = Rx.Observable.from(urls)
     .flatMap(url => extract.getHtml(url, {}))
     .filter(obj => obj.html !== null)
@@ -113,9 +105,9 @@ module.exports.crawl = () => {
     .then(() => Crawl.stop())
     .then(() => console.log(Crawl.get().toString()))
     .catch(err => {
+      console.log(err)
       Crawl.get().addError(err)
       return Crawl.stop()
     })
-    .catch(err => console.log('catch err', err))
 }
 

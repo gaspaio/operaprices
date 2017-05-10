@@ -1,32 +1,29 @@
 const uuid = require('uuid')
 const moment = require('moment')
-const db = require('../db').db
+const db = require('../db')
 
 let CURR_CRAWL
 
 class Crawl {
   constructor (row) {
-    this.id = row.id
-    this.startTime = row.startTime
-    this.endTime = row.endTime
+    ['id', 'startTime', 'endTime'].forEach(f => {
+      this[f] = f in row ? row[f] : null
+    })
 
-    if (!(row.status in Crawl.statuses)) {
-      throw Error(`Unknown status row value "${row.status}"`)
+    this.status = null
+    if ('status' in row) {
+      if (!(row.status in Crawl.statuses)) throw Error(`Unknown status row value "${row.status}"`)
+      this.status = Crawl.statuses[row.status]
     }
 
-    this.status = Crawl.statuses[row.status]
-    this.stats = JSON.parse(row.stats)
-    this.errors = JSON.parse(row.errors)
+    this.stats = 'stats' in row ? JSON.parse(row.stats) : {}
+    this.errors = 'errors' in row ? JSON.parse(row.errors) : []
   }
 
   stop (time = null) {
     this.endTime = time || moment.utc().unix()
     this.status = Crawl.statuses.CRAWL_DONE
-    const errors = JSON.stringify(this.errors).replace(/'/g, '')
-    const q = `UPDATE OR FAIL crawl SET (endTime, status, stats, errors)=(${this.endTime}, '${this.status}', '${JSON.stringify(this.stats)}', '${errors}') WHERE id=${this.id}`
-    return db
-      .run(q)
-      .then(() => this)
+    return db.crawlStop(this)
   }
 
   get duration () {
@@ -78,33 +75,21 @@ class Crawl {
   }
 
   static start (time = null) {
-    const startTime = time || moment.utc().unix()
-    const status = Crawl.statuses.CRAWL_STARTED
+    const crawl = new Crawl({
+      startTime: time || moment.utc().unix(),
+      status: Crawl.statuses.CRAWL_STARTED
+    })
 
-    const q = `INSERT INTO crawl (startTime, status) VALUES (${startTime}, '${status}')`
-    return db
-      .run(q)
-      .then(stmt => Crawl.load(stmt.lastID))
-  }
-
-  static load (id) {
-    return db
-      .get(`SELECT * FROM crawl WHERE id = ${id}`)
-      .then(row => {
-        if (!row) throw Error(`Unknown crawl with ID '${id}'`)
-        return new Crawl(row)
-      })
+    return db.crawlStart(crawl)
   }
 }
 
-module.exports.start = (time = null) => {
-  return Crawl.start(time).then(c => {
-    CURR_CRAWL = c
-  })
+module.exports.start = async (time = null) => {
+  CURR_CRAWL = await Crawl.start(time)
 }
 
-module.exports.stop = (time = null) => {
-  return CURR_CRAWL.stop()
+module.exports.stop = async (time = null) => {
+  return await CURR_CRAWL.stop()
 }
 
 module.exports.get = () => CURR_CRAWL
