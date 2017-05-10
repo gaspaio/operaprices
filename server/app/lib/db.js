@@ -18,6 +18,10 @@ module.exports.open = () => {
   //.then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
 }
 
+module.exports.close = () => {
+  return db.close()
+}
+
 // Crawl
 module.exports.crawlStart = async crawl => {
   const stmt = await db.run(`INSERT INTO crawl (startTime, status) VALUES (${crawl.startTime}, '${crawl.status}')`)

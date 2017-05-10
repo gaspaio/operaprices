@@ -1,6 +1,7 @@
 const uuid = require('uuid')
 const moment = require('moment')
 const db = require('../db')
+const logger = require('../logging').logger
 
 let CURR_CRAWL
 
@@ -23,7 +24,10 @@ class Crawl {
   stop (time = null) {
     this.endTime = time || moment.utc().unix()
     this.status = Crawl.statuses.CRAWL_DONE
-    return db.crawlStop(this)
+    return db.crawlStop(this).then(() => {
+      logger.info('Crawl stopped', this.toObject())
+      return this
+    })
   }
 
   get duration () {
@@ -36,8 +40,7 @@ class Crawl {
       err = Error(`Param should be instance of Error: ${err}`)
     }
 
-    console.log(err)
-
+    logger.error(err.message, err)
     const e = {message: err.message, stack: err.stack.split('\n').map(s => s.trim())}
     this.errors.push(e)
   }
@@ -56,15 +59,18 @@ class Crawl {
     this.stats[key] += val
   }
 
-  toString () {
+  toObject () {
     const out = this.stats
     out.crawl = {
       start_time: this.startTime,
       end_time: this.endTime,
       duration: this.duration
     }
+    return out
+  }
 
-    return JSON.stringify(out)
+  toString () {
+    return JSON.stringify(this.toObject())
   }
 
   static get statuses () {
@@ -80,7 +86,10 @@ class Crawl {
       status: Crawl.statuses.CRAWL_STARTED
     })
 
-    return db.crawlStart(crawl)
+    return db.crawlStart(crawl).then(obj => {
+      logger.info('Crawl started', {time: obj.startTime})
+      return obj
+    })
   }
 }
 

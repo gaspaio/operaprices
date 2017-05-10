@@ -26,8 +26,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.3.0",
-    "nodemon": "^1.11.0",
-    "pretty-error": "^2.1.0"
+    "nodemon": "^1.11.0"
   },
   "scripts": {
     "db:dev:init": "sqlite3 db/development.db < db/init.sql",
