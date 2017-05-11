@@ -13,6 +13,6 @@ node_modules
 npm-debug.log
 web/config/app.js
 web/dist
-server/app/db/*.db
+server/data/*.db
 .vagrant
 

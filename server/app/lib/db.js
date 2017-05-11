@@ -6,15 +6,15 @@ const moment = require('moment')
 const logging = require('./logging')
 const Show = require('./models/Show')
 const uuid = require('uuid')
-const basePath = path.join('__dirname', '..', 'db')
 const Crawl = require('./models/Crawl')
 
 module.exports.CRAWL_DONE = 'DONE'
 module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
+  const dbfile = path.join('__dirname', '..', config.get('db.location'), config.get('db.name'))
   return Promise.resolve()
-    .then(() => db.open(path.join(basePath, config.get('db.name')), {cached: true}))
+    .then(() => db.open(dbfile, {cached: true}))
   //.then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
 }
 

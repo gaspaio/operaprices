@@ -55,13 +55,17 @@ module.exports.crawl = () => {
     'https://www.operadeparis.fr/saison-17-18/opera'
   ]
 
-  db.open()
+  return db.open()
     .then(() => Crawl.start())
     .then(() => doCrawl(urls))
     .then(() => Crawl.stop())
     .catch(err => {
-      Crawl.get().addError(err)
-      return Crawl.stop()
+      if (Crawl.get()) {
+        Crawl.get().addError(err)
+        Crawl.stop()
+      } else {
+        logger.error(err)
+      }
     })
     .then(() => db.close())
 }

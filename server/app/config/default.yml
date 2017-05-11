@@ -5,5 +5,7 @@ logger:
   level: info
 db:
   name: default.db
+  location: ../data
   default_time_window: 240  # hours
-
+crawler:
+  cron: '00 28 * * * *'

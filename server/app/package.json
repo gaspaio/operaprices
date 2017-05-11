@@ -7,6 +7,7 @@
     "body-parser": "^1.17.1",
     "cheerio": "^0.22.0",
     "config": "^1.25.1",
+    "cron": "^1.2.1",
     "express": "^4.15.2",
     "express-winston": "^2.3.0",
     "moment": "^2.18.1",
@@ -29,11 +30,13 @@
     "nodemon": "^1.11.0"
   },
   "scripts": {
-    "db:dev:init": "sqlite3 db/development.db < db/init.sql",
-    "db:dev:sh": "sqlite3 db/development.db",
-    "db:dev:fixtures": "sqlite3 db/development.db < db/fixtures.sql",
+    "db:init:dev": "sqlite3 ../data/development.db < db/init.sql",
+    "db:sh:dev": "sqlite3 ../data/development.db",
+    "db:fixtures:dev": "sqlite3 ../data/development.db < db/fixtures.sql",
     "test": "mocha",
-    "start:dev": "NODE_ENV=development nodemon index.js",
-    "start": "NODE_ENV=production node index.js"
+    "server:start:dev": "NODE_ENV=development nodemon index.js",
+    "server:start": "NODE_ENV=production node index.js",
+    "crawler:crawl:dev": "NODE_ENV=development node crawler.js",
+    "crawler:start:dev": "NODE_ENV=development node crawler.js start"
   }
 }
