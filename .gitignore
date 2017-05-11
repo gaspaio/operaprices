@@ -1,18 +1,7 @@
-
-notes.md
-upwebdata.sh
-
-scraping/operaprices/settings.py
-scraping/scrapinghub.yml
-scraping/__pycache__/
-*.py[cod]
-scraping/build
-scraping/*.egg-info/
-
 node_modules
 npm-debug.log
-web/config/app.js
-web/dist
-server/data/*.db
+client/config/app.js
+client/dist
+data/*.db
 .vagrant
 
