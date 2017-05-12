@@ -1,14 +1,14 @@
 FROM node:7-alpine
 
-RUN apk --nocache add git
+RUN apk --no-cache add sqlite git && \
+    git clone --depth 1 -b v2 https://github.com/gaspaio/operaprices.git /src && \
+    cd /src/server && \
+    yarn install && \
+    apk del git
 
-# get latest code from github
-
-# yarn install
-
-# remove git
+COPY entrypoint.sh /entrypoint.sh
 
 WORKDIR /src
 
-CMD [ "sh", "entrypoint.sh" ]
+CMD [ "sh", "/entrypoint.sh" ]
 

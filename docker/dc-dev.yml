@@ -1,0 +1,13 @@
+version: "3"
+services:
+  crawler:
+    build: crawler-dev
+    environment:
+        - NODE_ENV=development
+        - NODE_CONFIG_DIR=/src/config
+        - OP_DATA_DIR=/data
+        - OP_DB_NAME=development.db
+    volumes:
+      - ../server:/src
+      - ../data:/data
+
