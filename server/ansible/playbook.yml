@@ -5,43 +5,61 @@
   # become_method: sudo
   vars:
     - common_hostname: 'devmachine'
+  vars_files:
+    - secrets.yml
+
   tasks:
-    - hostname:
-        name: "{{ common_hostname }}"
+  - hostname:
+      name: "{{ common_hostname }}"
 
   # hostname -> /etc/hosts
 
-    # Base utilities & dependencies
-    - apt:
-        name: "{{ item }}"
-        state: present
-        cache_valid_time: 3600
-      with_items:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - gnupg2
-      - software-properties-common
-      - vim
-      - libsqlite3-dev
+  # Base utilities & dependencies
+  - apt: name="{{ item }}" state=present cache_valid_time=3600
+    with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+    - vim
+    - libsqlite3-dev
+    - fail2ban
 
-    # Install docker-ce
-    - apt_key:
-        url: "https://download.docker.com/linux/debian/gpg"
-        id: 0EBFCD88
-        state: present
+  # Docker-ce
+  - apt_key: url="https://download.docker.com/linux/debian/gpg" id=0EBFCD88 state=present
 
-    - apt_repository:
-        repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
-        state: present
-        update_cache: yes
+  - apt_repository:
+      repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+      state: present
+      update_cache: yes
 
-    - apt:
-        name: "docker-ce"
-        state: latest
-        cache_valid_time: 3600
+  - apt: name="docker-ce" state=latest cache_valid_time=3600
 
-    - systemd:
-        name: docker
-        enabled: yes
+  - systemd: name=docker enabled=yes
+
+  # Rsyslog + Loggle
+  - template: src=22-loggly.conf dest=/etc/rsyslog.d/22-loggly.conf
+    notify: rsyslog restart
+
+  - copy: src=rsyslog.conf dest=/etc/rsyslog.conf
+    notify: rsyslog restart
+
+  # Access & Security
+  - copy: src=sshd_config dest=/etc/ssh/sshd_config
+    notify: sshd restart
+
+  - copy: src=fail2ban.local dest=/etc/fail2ban/fail2ban.local
+    notify: fail2ban restart
+
+
+  handlers:
+  - name: rsyslog restart
+    service: name=rsyslog state=restarted
+
+  - name: sshd restart
+    service: name=sshd state=restarted
+
+  - name: fail2ban restart
+    service: name=fail2ban state=restarted
 
