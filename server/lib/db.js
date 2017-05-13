@@ -12,9 +12,12 @@ module.exports.CRAWL_DONE = 'DONE'
 module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
-  const dbfile = path.join('__dirname', '..', config.get('db.location'), config.get('db.name'))
+
+  let dbPath = path.join(config.get('db.location'), config.get('db.name'))
+  if (!path.isAbsolute(dbPath)) dbPath = path.join('__dirname', '..', dbPath)
+
   return Promise.resolve()
-    .then(() => db.open(dbfile, {cached: true}))
+    .then(() => db.open(dbPath, {cached: true}))
   //.then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
 }
 
