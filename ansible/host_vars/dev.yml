@@ -1,0 +1,5 @@
+---
+common_hostname: 'devmachine'
+op_tag: v2.0.0-alpha1
+op_env: dev
+

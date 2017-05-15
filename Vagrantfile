@@ -64,8 +64,6 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "ansible" do |ansible|
-    ansible.verbose = "v"
-    ansible.playbook = "ansible/playbook.yml"
-  end
+  config.vm.provision "shell", path: "ansible/scripts/dev.sh"
+
 end

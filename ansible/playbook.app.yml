@@ -1,0 +1,13 @@
+---
+- hosts: crawler
+  vars_files:
+    - secrets/vars.yml
+  tasks:
+    - git: clone=yes depth=1 version={{op_tag}}
+        repo:https://github.com/gaspaio/operaprices.git
+        dest:/tmp/operaprices
+
+    - command: make build ENV={{op_env}}
+        chdir:/tmp/operaprices
+
+

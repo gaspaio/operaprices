@@ -1,10 +1,11 @@
 version: "3"
 services:
   crawler:
-    build: crawler
+    image: crawler
+    restart: always
     environment:
         - NODE_ENV=production
         - OP_DB_NAME=production.db
     volumes:
-      - ../data:/data
+      - /data:/data
 

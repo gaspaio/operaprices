@@ -4,5 +4,5 @@ client/config/app.js
 client/dist
 data/*.db
 .vagrant
-ansible/secrets.yml
+ansible/secrets
 

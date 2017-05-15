@@ -1,12 +1,9 @@
 ---
-- hosts: default
-  # remote_user: root
-  become: yes
-  # become_method: sudo
+- hosts: crawler
   vars:
-    - common_hostname: 'devmachine'
+    docker_dcversion: 1.13.0
   vars_files:
-    - secrets.yml
+    - secrets/vars.yml
 
   tasks:
   - hostname:
@@ -25,8 +22,10 @@
     - vim
     - libsqlite3-dev
     - fail2ban
+    - git
+    - make
 
-  # Docker-ce
+  # Docker
   - apt_key: url="https://download.docker.com/linux/debian/gpg" id=0EBFCD88 state=present
 
   - apt_repository:
@@ -37,6 +36,13 @@
   - apt: name="docker-ce" state=latest cache_valid_time=3600
 
   - systemd: name=docker enabled=yes
+
+  - get_url:
+      dest: /usr/local/bin/docker-compose-{{docker_dcversion}}
+      url: https://github.com/docker/compose/releases/download/1.13.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}
+      mode: 755
+
+  - file: state=link dest=/usr/local/bin/docker-compose src=/usr/local/bin/docker-compose-{{docker_dcversion}}
 
   # Rsyslog + Loggle
   - template: src=22-loggly.conf dest=/etc/rsyslog.d/22-loggly.conf
