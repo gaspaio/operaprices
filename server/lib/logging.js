@@ -6,7 +6,7 @@ const logger = new (winston.Logger)({
   transports: [
     new (winston.transports.Console)({
       level: config.get('logger.level'),
-      colorize: true
+      colorize: false
     })
   ]
 });
