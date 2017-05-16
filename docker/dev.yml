@@ -3,6 +3,8 @@ services:
   crawler:
     logging:
         driver: syslog
+        options:
+          tag: crawler
     environment:
         - NODE_ENV=development
         - OP_DB_NAME=development.db

@@ -26,6 +26,9 @@ deploy:
 devup:
 	@vagrant up --provision
 
+prodsh:
+	@ssh -i ansible/secrets/prod root@104.196.180.35
+
 systemup:
 	@${ANSIBLE_CMD} ansible/playbook.system.yml
 
