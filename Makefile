@@ -9,6 +9,7 @@ endif
 
 S = crawler
 DC_CMD = docker-compose -f docker/docker-compose.yml -f docker/${ENV}.yml
+ANSIBLE_CMD = PYTHONUNBUFFERED=1 ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no' ansible-playbook -v -i ansible/inventory -l ${ENV}
 
 crawl:
 	@docker run --rm -ti -v $(realpath data):/data -e "NODE_ENV=${NODE_ENV}" -e "OP_DB_NAME=${NODE_ENV}.db" ${CRAWLER_IMG} crawl
@@ -19,12 +20,18 @@ start:
 build:
 	@${DC_CMD} build --no-cache $S
 
+deploy:
+	@${DC_CMD} up --no-deps -d $S
+
 devup:
 	@vagrant up --provision
 
-systemup:
-	@PYTHONUNBUFFERED=1 ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no' ansible-playbook -v -i ansible/inventory -l ${ENV} ansible/playbook.system.yml
+prodsh:
+	@ssh -i ansible/secrets/prod root@104.196.180.35
 
-deploy:
-	@${CD_CMD} up --no-deps -d S
+systemup:
+	@${ANSIBLE_CMD} ansible/playbook.system.yml
+
+crawlerup:
+	@${ANSIBLE_CMD} ansible/playbook.app.yml
 

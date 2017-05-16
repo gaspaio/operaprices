@@ -1,6 +1,10 @@
 version: "3"
 services:
   crawler:
+    logging:
+        driver: syslog
+        options:
+          tag: crawler
     environment:
         - NODE_ENV=production
         - OP_DB_NAME=production.db

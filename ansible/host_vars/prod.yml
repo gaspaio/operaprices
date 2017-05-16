@@ -1,0 +1,5 @@
+---
+common_hostname: 'instance-1'
+op_tag: v2  # code tag
+op_env: prod
+

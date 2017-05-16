@@ -6,8 +6,8 @@
     - secrets/vars.yml
 
   tasks:
-  - hostname:
-      name: "{{ common_hostname }}"
+    #- hostname:
+    #  name: "{{ common_hostname }}"
 
   # hostname -> /etc/hosts
 
