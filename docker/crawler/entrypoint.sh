@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Running OP server container for env '$NODE_ENV'"
+echo "Running OP Crawler container [env:'$NODE_ENV']"
 
 DB_PATH="/data/$OP_DB_NAME"
 if [ ! -f "$DB_PATH"  ]; then

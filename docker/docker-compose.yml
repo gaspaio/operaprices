@@ -4,8 +4,25 @@ services:
     build: crawler
     restart: always
     environment:
-        - NODE_ENV=production
-        - OP_DB_NAME=production.db
+      - NODE_ENV=production
+      - OP_DB_NAME=production.db
+    logging:
+        driver: syslog
+        options:
+          tag: crawler
     volumes:
       - /data:/data
-
+  web:
+    build: web
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - OP_DB_NAME=production.db
+    logging:
+        driver: syslog
+        options:
+          tag: crawler
+    ports:
+      - "80:9999"
+    volumes:
+      - /data:/data

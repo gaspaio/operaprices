@@ -34,8 +34,8 @@
     "db:sh:dev": "sqlite3 ../data/development.db",
     "db:fixtures:dev": "sqlite3 ../data/development.db < db/fixtures.sql",
     "test": "mocha",
-    "server:start:dev": "NODE_ENV=development nodemon index.js",
-    "server:start": "NODE_ENV=production node index.js",
+    "server:start:dev": "NODE_ENV=development nodemon server.js",
+    "server:start": "NODE_ENV=production node server.js",
     "crawler:crawl:dev": "NODE_ENV=development node crawler.js",
     "crawler:start:dev": "NODE_ENV=development node crawler.js start"
   }
