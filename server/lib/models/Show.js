@@ -33,4 +33,10 @@ module.exports = class Show {
     // Throw err if title, type, location, author changed ...
     return this
   }
+
+  toObject () {
+    const out = {}
+    Show.getFields().forEach(f => out[f] = this[f])
+    return out
+  }
 }

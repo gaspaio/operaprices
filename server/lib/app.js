@@ -20,19 +20,29 @@ const apiRouter = express.Router();
 
 apiRouter.get('/shows', utils.asyncWrapper(async (req, res) => {
   // ?include=lowestActivePrice,tendency&active=false
+  // TODO: validate params & param accepted values
   const params = Object.assign({
     include: null,
-    active: 'true'
+    active: null,
+    saleOpen: null
   }, req.query)
 
-  const includes = params.include !== null ? params.include.split(',') : []
-  const active = params.active != 'false'
+  const includes = params.include !== null ? params.include.split(',') : [];
+  ['active', 'saleOpen'].forEach(p => {
+    if (params[p] === null) return
+    params[p] = params[p] === 'true'
+  })
 
   const response = (lastCrawl, shows) => {
-    return {meta: {lastCrawl}, shows}
+    return {
+      meta: {
+        lastCrawl: lastCrawl.toObject()
+      },
+      shows: shows.map(s => s.toObject())
+    }
   }
 
-  let shows = await db.getShows({active})
+  let shows = await db.getShows(params)
 
   const lastCrawl = await db.getLastCrawl()
 

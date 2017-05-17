@@ -39,6 +39,11 @@ module.exports.crawlStop = async crawl => {
   return crawl
 }
 
+module.exports.getLastCrawl = async () => {
+  let q = 'SELECT * FROM crawl ORDER BY startTime DESC LIMIT 1'
+  return await db.get(q).then(row => new Crawl.Crawl(row))
+}
+
 // Prices
 module.exports.insertPrice = async price => {
   const stmt = await db.run(`INSERT INTO price VALUES (${price.crawlId}, ${price.performanceId}, '${price.category}', ${price.price}, ${this.available ? 1 : 0})`)
@@ -60,11 +65,22 @@ module.exports.upsertPerformance = async performance => {
 }
 
 // Shows
+// options: active, saleOpen
 module.exports.getShows = async (options) => {
   let q = 'SELECT * FROM show'
+  const opts = Object.assign({active: null, saleOpen: null}, options)
 
-  if ('active' in options && options.active) {
-    q += ` WHERE end_date > ${utils.nowDate()}  `
+  const wheres = []
+  if (options.active !== null) {
+    wheres.push(`endDate ${options.active ? '>' : '<'} ${utils.nowDate()}`)
+  }
+
+  if (options.saleOpen !== null) {
+    wheres.push(`saleOpen = ${options.saleOpen ? 1 : 0}`)
+  }
+
+  if (wheres.length) {
+    q += ` WHERE ${wheres.join(' AND ')}`
   }
 
   const rows = await db.all(q)
@@ -107,11 +123,6 @@ module.exports.upsertShow = async item => {
   const stmt = await db.run(q)
   if (!show.id) show.id = stmt.lastID
   return show
-}
-
-module.exports.getLastCrawl = async () => {
-  let q = 'SELECT * FROM crawl ORDER BY time DESC LIMIT 1'
-  return await db.get(q)
 }
 
 module.exports.getLowestPerformancePrices = async (showId, options) => {

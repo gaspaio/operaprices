@@ -60,13 +60,13 @@ class Crawl {
   }
 
   toObject () {
-    const out = this.stats
-    out.crawl = {
+    return {
       start_time: this.startTime,
       end_time: this.endTime,
-      duration: this.duration
+      duration: this.duration,
+      stats: this.stats,
+      errors: this.errors
     }
-    return out
   }
 
   toString () {
@@ -103,3 +103,4 @@ module.exports.stop = async (time = null) => {
 
 module.exports.get = () => CURR_CRAWL
 
+module.exports.Crawl = Crawl
