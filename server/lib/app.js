@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const logging = require('./logging')
 const db = require('./db')
 const config = require('config')
+const path = require('path')
 const utils = require('./utils')
 
 if (!process.env.NODE_ENV) {
@@ -11,6 +12,9 @@ if (!process.env.NODE_ENV) {
 }
 
 app.use(bodyParser.json())
+
+// Serve client HTML and JS
+app.use(express.static(path.normalize(path.join(__dirname,'..','..','client','dist'))))
 
 const apiRouter = express.Router();
 

@@ -4,8 +4,15 @@ services:
     build: crawler
     restart: always
     environment:
-        - NODE_ENV=production
-        - OP_DB_NAME=production.db
+      - NODE_ENV=production
+      - OP_DB_NAME=production.db
     volumes:
       - /data:/data
-
+  web:
+    build: web
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - OP_DB_NAME=production.db
+    volumes:
+      - /data:/data

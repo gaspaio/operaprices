@@ -1,5 +1,5 @@
 ---
-- hosts: crawler
+- hosts: app
   vars:
     docker_dcversion: 1.13.0
   vars_files:

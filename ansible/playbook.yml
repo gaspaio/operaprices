@@ -1,0 +1,6 @@
+---
+- include: system.yml
+  tags: system
+
+- include: app.yml
+  tags: app

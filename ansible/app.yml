@@ -1,5 +1,5 @@
 ---
-- hosts: crawler
+- hosts: app
   vars_files:
     - secrets/vars.yml
   tasks:

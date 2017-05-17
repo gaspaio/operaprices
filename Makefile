@@ -7,7 +7,7 @@ else
 	NODE_ENV = development
 endif
 
-S = crawler
+# S = crawler
 DC_CMD = docker-compose -f docker/docker-compose.yml -f docker/${ENV}.yml
 ANSIBLE_CMD = PYTHONUNBUFFERED=1 ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no' ansible-playbook -v -i ansible/inventory -l ${ENV}
 

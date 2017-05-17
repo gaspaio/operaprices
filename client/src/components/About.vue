@@ -13,30 +13,16 @@
 
         <p>To be continued ...</p>
 
-        <hr />
-
-        <p>If you wish to have your fun with this dataset, here it is, one <em>json</em> file per scrapped show:</p>
-
-        <ol>
-            <li v-for="file in urls"><a :href="file.url" :title="file.title">{{ file.title }}</a></li>
-        </ol>
   </div>
 </template>
 
 <script>
 
-import * as config from '../../config/app'
+// import * as config from '../../config/app'
 
 export default {
   name: 'about',
-  props: ['files'],
-  computed: {
-    urls: function () {
-      return this.files.map(file => {
-        return {title: file, url: `${config.mainUrl}/${file}`}
-      })
-    }
-  }
+  props: ['files']
 }
 </script>
 
