@@ -4,4 +4,8 @@ services:
     environment:
         - NODE_ENV=development
         - OP_DB_NAME=development.db
+  web:
+    environment:
+        - NODE_ENV=development
+        - OP_DB_NAME=development.db
 

@@ -21,7 +21,7 @@ services:
     logging:
         driver: syslog
         options:
-          tag: crawler
+          tag: web
     ports:
       - "80:9999"
     volumes:

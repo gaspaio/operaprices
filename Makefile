@@ -18,7 +18,7 @@ crawl:
 start:
 	@${DC_CMD} up
 build:
-	@${DC_CMD} build --no-cache $S
+	@${DC_CMD} build --no-cache --force-rm $S
 deploy:
 	@${DC_CMD} up --no-deps -d $S
 prodsh:
