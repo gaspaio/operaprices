@@ -155,7 +155,6 @@ WHERE
 GROUP BY p.date, c.startTime
 ORDER BY p.date ASC, c.startTime ASC`
 
-  console.log('query', q)
   const priceSeries = await db.all(q)
 
   const priceMap = new Map()
@@ -164,7 +163,6 @@ ORDER BY p.date ASC, c.startTime ASC`
     curr.push([line.crawlTime, line.minPrice, line.priceCategory])
     priceMap.set(line.performanceDate, curr)
   })
-  console.log(priceMap)
   return priceMap
 }
 

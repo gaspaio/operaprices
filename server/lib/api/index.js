@@ -15,6 +15,10 @@ const showAddIncludes = async (showObj, includes, lastCrawl) => {
   showObj.cheapestPerformances = showObj.tendency = null
   if (includes.includes('cheapest')) {
     showObj.cheapestPerformances = utils.findCheapestPerformances(priceMap, lastCrawl.startTime)
+    if (showObj.cheapestPerformances.length >0) {
+      // All the cheapest perfs have the same price
+      showObj.cheapestPrice = showObj.cheapestPerformances[0][1]
+    }
   }
   if (includes.includes('tendency')) {
     showObj.tendency = utils.findCheapestTendency(priceMap)

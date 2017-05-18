@@ -7,12 +7,14 @@ const config = require('config')
 const path = require('path')
 const utils = require('./utils')
 const apiRouter = require('./api')
+const cors = require('cors')
 
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development'
 }
 
 app.use(bodyParser.json())
+app.use(cors())
 
 // Serve client HTML and JS
 app.use(express.static(path.normalize(path.join(__dirname,'..','..','client','dist'))))

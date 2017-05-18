@@ -61,8 +61,8 @@ class Crawl {
 
   toObject () {
     return {
-      start_time: this.startTime,
-      end_time: this.endTime,
+      startTime: this.startTime,
+      endTime: this.endTime,
       duration: this.duration,
       stats: this.stats,
       errors: this.errors
