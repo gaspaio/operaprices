@@ -17,11 +17,12 @@ module.exports = class Show {
       'slug', 'type', 'title', 'author', 'location', 'url', 'buyUrl', 'saleStartDate', 'saleOpen',
       'startDate', 'endDate', 'createdAt', 'updatedAt'
     ]
-    if (id) out.push('id')
+    if (id) out.unshift('id')
     return out
   }
 
   get active () {
+    console.log('here')
     return this.endDate >= utils.nowDate()
   }
 

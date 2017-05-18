@@ -87,6 +87,13 @@ module.exports.getShows = async (options) => {
   return rows.map(row => new Show(row))
 }
 
+module.exports.getShow = async id => {
+  let q = `SELECT * FROM show WHERE id = ${parseInt(id)}`
+  const row = await db.get(q)
+  if (!row) return null
+  return new Show(row)
+}
+
 module.exports.upsertShow = async item => {
   row = await db.get(`SELECT * FROM show WHERE slug='${item.slug}'`)
 
@@ -142,7 +149,7 @@ INNER JOIN performance p on p.id = pr.performanceId
 INNER JOIN show s on p.showId = s.id
 WHERE
   c.startTime > ${options.time}
-  AND p.date > ${utils.now()}
+  AND p.date >= ${utils.nowDate()}
   AND pr.available = 1
   AND s.id = ${showId}
 GROUP BY p.date, c.startTime
@@ -151,13 +158,13 @@ ORDER BY p.date ASC, c.startTime ASC`
   console.log('query', q)
   const priceSeries = await db.all(q)
 
-  const performances = new Map()
+  const priceMap = new Map()
   priceSeries.forEach(line => {
-    const curr = performances.has(line.performanceDate) ? performances.get(line.performanceDate) : []
+    const curr = priceMap.has(line.performanceDate) ? priceMap.get(line.performanceDate) : []
     curr.push([line.crawlTime, line.minPrice, line.priceCategory])
-    performances.set(line.performanceDate, curr)
+    priceMap.set(line.performanceDate, curr)
   })
-
-  return performances
+  console.log(priceMap)
+  return priceMap
 }
 
