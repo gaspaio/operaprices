@@ -3,7 +3,8 @@ npm-debug.log
 client/config/app.js
 client/dist
 !client/dist/.gitkeep
-data/*.db
+data/*
+!data/.gitkeep
 .vagrant
 ansible/secrets
-
+/test.sql

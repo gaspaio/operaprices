@@ -33,31 +33,28 @@ apiRouter.get('/shows', utils.asyncWrapper(async (req, res) => {
     params[p] = params[p] === 'true'
   })
 
-  const response = (lastCrawl, shows) => {
-    return {
-      meta: {
-        lastCrawl: lastCrawl.toObject()
-      },
-      shows: shows.map(s => s.toObject())
-    }
-  }
+  const out = {meta: {}, shows: []}
+  const lastCrawl = await db.getLastCrawl()
+  out.meta.lastCrawl = lastCrawl.toObject()
 
   let shows = await db.getShows(params)
-
-  const lastCrawl = await db.getLastCrawl()
+  out.shows = shows.map(s => s.toObject())
 
   if (!includes.includes('cheapest') && !includes.includes('tendency')) {
-    res.json(response(lastCrawl, shows))
+    res.json(out)
     return
   }
 
   const priceMaps = await Promise.all(
-    shows.map(show => db.getLowestPerformancePrices(show.id))
+    out.shows.map(show => db.getLowestPerformancePrices(show.id))
   )
 
-  shows = shows.map((show, i) => {
+  out.shows = out.shows.map((show, i) => {
+    show.cheapestPerformances = show.tendency = null
+    if (!show.saleOpen || !show.active) return show
+
     if (includes.includes('cheapest')) {
-      show.cheapestPerformances = utils.findCheapestPerformances(priceMaps[i], lastCrawl.time)
+      show.cheapestPerformances = utils.findCheapestPerformances(priceMaps[i], lastCrawl.startTime)
     }
     if (includes.includes('tendency')) {
       show.tendency = utils.findCheapestTendency(priceMaps[i])
@@ -65,7 +62,7 @@ apiRouter.get('/shows', utils.asyncWrapper(async (req, res) => {
     return show
   })
 
-  res.json(response(lastCrawl, shows))
+  res.json(out)
 }))
 
 apiRouter.get('shows/:id', (req, res) => {

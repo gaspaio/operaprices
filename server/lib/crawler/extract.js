@@ -70,7 +70,7 @@ const prices = module.exports.prices = (html, item) => {
     item.prices[date] = []
     $(elem).find('div.PerformanceList__item__table > div > ol > li.PerformanceTable__rows').each((i, row) => {
       try {
-        const available = $(row).attr('class').split(' ').indexOf('unavailable') === -1
+        const available = $(row).attr('class').indexOf('unavailable') === -1
         const cat = $(row).children('span.PerformanceTable__label').first().text().trim()
         const price = parseInt($(row).children('span.PerformanceTable__price').first().text().trim().split(' ')[0])
         item.prices[date].push({available, cat, price})

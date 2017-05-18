@@ -46,7 +46,7 @@ module.exports.getLastCrawl = async () => {
 
 // Prices
 module.exports.insertPrice = async price => {
-  const stmt = await db.run(`INSERT INTO price VALUES (${price.crawlId}, ${price.performanceId}, '${price.category}', ${price.price}, ${this.available ? 1 : 0})`)
+  const stmt = await db.run(`INSERT INTO price VALUES (${price.crawlId}, ${price.performanceId}, '${price.category}', ${price.price}, ${price.available ? 1 : 0})`)
   price.id = stmt.lastID
   return price
 }
@@ -128,25 +128,27 @@ module.exports.upsertShow = async item => {
 module.exports.getLowestPerformancePrices = async (showId, options) => {
   // For each active performance of show, get the series of cheapest prices
   options = Object.assign({
-    time: utils.nowDate() - config.get('db.default_time_window') * 60 * 60
+    time: utils.now() - config.get('db.default_time_window') * 60 * 60
   }, options)
 
   let q = `SELECT
-  c.time crawlTime,
+  c.startTime crawlTime,
   p.date performanceDate,
-  pr.category priceCategory, MIN(pr.price) as minPrice
+  pr.category priceCategory,
+  MIN(pr.price) as minPrice
 FROM price pr
-INNER JOIN crawl c on c.id = pr.crawl_id
-INNER JOIN performance p on p.id = pr.performance_id
-INNER JOIN show s on p.show_id = s.id
+INNER JOIN crawl c on c.id = pr.crawlId
+INNER JOIN performance p on p.id = pr.performanceId
+INNER JOIN show s on p.showId = s.id
 WHERE
-  c.time > ${options.time}
+  c.startTime > ${options.time}
   AND p.date > ${utils.now()}
   AND pr.available = 1
   AND s.id = ${showId}
-GROUP BY p.date, c.time
-ORDER BY p.date ASC, c.time ASC`
+GROUP BY p.date, c.startTime
+ORDER BY p.date ASC, c.startTime ASC`
 
+  console.log('query', q)
   const priceSeries = await db.all(q)
 
   const performances = new Map()

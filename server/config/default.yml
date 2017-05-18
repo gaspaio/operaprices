@@ -6,6 +6,6 @@ logger:
 db:
   name: default.db
   location: ../data
-  default_time_window: 240  # hours
+  default_time_window: 72  # hours
 crawler:
   cron: '00 28 * * * *'

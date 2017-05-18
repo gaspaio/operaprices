@@ -22,7 +22,10 @@ build:
 deploy:
 	@${DC_CMD} up --no-deps -d $S
 prodsh:
-	@ssh -i ansible/secrets/prod root@104.196.180.35
+	@ssh -i ansible/secrets/prod root@operaprices.rodolforipado.net
 up:
 	@${ANSIBLE_CMD} -t $S ansible/playbook.yml
+dbup:
+	[ -f data/development.db ] && mv data/development.db data/development.db.bak
+	scp -i ansible/secrets/prod root@operaprices.rodolforipado.net:/data/production.db data/development.db
 
