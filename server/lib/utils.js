@@ -1,7 +1,7 @@
 const moment = require('moment')
 
 module.exports.nowDate = () => {
-  return  moment().utc().hour(12).minutes(0).seconds(0).milliseconds(0).unix()
+  return moment().utc().hour(12).minutes(0).seconds(0).milliseconds(0).unix()
 }
 
 module.exports.now = () => moment().utc().unix()
@@ -16,8 +16,6 @@ module.exports.map2object = mm => {
   return ret
 }
 
-module.exports.snake2Camel = s => s.replace(/(\_\w)/g, m => m[1].toUpperCase())
-
 module.exports.sqlClean = s => s ? s.trim().replace(/'/g, '') : s
 
 module.exports.findCheapestPerformances = (priceMap, lastCrawlTime) => {
@@ -30,17 +28,14 @@ module.exports.findCheapestPerformances = (priceMap, lastCrawlTime) => {
   for (let [perf, series] of priceMap) {
     const lastItem = series[series.length - 1]
     // Ignore items that were not found in the last crawl (complete performances, ...)
-    if (lastItem[0] != lastCrawlTime) continue
+    if (lastItem[0] !== lastCrawlTime) continue
 
-    //console.log('last item for', perf, lastItem)
     if (!minPrice || minPrice > lastItem[1]) {
-      //console.log('setting min price to', lastItem[1])
       data = [[perf, lastItem[1], lastItem[2]]]
       minPrice = lastItem[1]
     } else if (lastItem[1] > minPrice) {
       continue
-    }
-    else if (lastItem[1] == minPrice) {
+    } else if (lastItem[1] === minPrice) {
       data.push([perf, lastItem[1], lastItem[2]])
     }
   }
@@ -51,10 +46,10 @@ module.exports.findCheapestPerformances = (priceMap, lastCrawlTime) => {
 module.exports.findCheapestTendency = priceMap => {
   // Find min price for each crawl -> series of min prices
   let crawlMap = new Map()
-  for (let [perf, series] of priceMap) {
+  for (let [perf, series] of priceMap) { // eslint-disable-line no-unused-vars
     // For each performance
     // const dd = perf == 1499967000
-    for(let i = 0, curr; i < series.length; i++) {
+    for (let i = 0, curr; i < series.length; i++) {
       if (!crawlMap.has(series[i][0])) {
         crawlMap.set(series[i][0], series[i][1])
       } else {
@@ -71,9 +66,9 @@ module.exports.findCheapestTendency = priceMap => {
   priceSeries.sort((i1, i2) => i2[0] - i1[0])
 
   // reduce to tendency
-  for (let i=1; i < priceSeries.length;i++) {
-    if (priceSeries[i][1] == priceSeries[i - 1][1]) continue
-    return (priceSeries[i - 1][1] - priceSeries[i][1])/Math.abs(priceSeries[i -1][1] - priceSeries[i][1])
+  for (let i = 1; i < priceSeries.length; i++) {
+    if (priceSeries[i][1] === priceSeries[i - 1][1]) continue
+    return (priceSeries[i - 1][1] - priceSeries[i][1]) / Math.abs(priceSeries[i - 1][1] - priceSeries[i][1])
   }
   return 0
 }

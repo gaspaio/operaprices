@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "ecmaFeatures": {}
+  },
+  "extends": [
+    "standard"
+  ],
+  "env": {
+    "browser": false,
+    "node": true,
+    "es6": true
+  }
+}

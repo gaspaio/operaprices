@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
     <app-header />
-    <router-view :shows="shows" :files="files"></router-view>
+    <router-view :shows="shows" :loading="loading"></router-view>
     <app-footer :lastUpdated='lastUpdated' />
   </div>
 </template>
@@ -18,8 +18,7 @@ export default {
     return {
       loading: true,
       lastUpdated: null,
-      shows: [],
-      files: []
+      shows: []
     }
   },
   components: {
@@ -27,7 +26,7 @@ export default {
     'app-footer': AppFooter
   },
   created: function () {
-    fetch(`${Vue.config.app.apiUrl}/shows?active=true&saleOpen=true&include=cheapest,tendency`, {mode: 'cors'})
+    fetch(`${Vue.config.app.apiUrl}/shows?active=true&include=cheapest,tendency`, {mode: 'cors'})
       .then(res => res.json())
       .then(json => {
         this.$data.lastUpdated = json.meta.lastCrawl.startTime * 1000
@@ -35,6 +34,10 @@ export default {
           // convert all dates to JS dates from unix
           s.startDate *= 1000
           s.endDate *= 1000
+
+          if (s.saleStartDate) {
+            s.saleStartDate *= 1000
+          }
 
           if ('cheapestPerformances' in s) {
             s.cheapestPerformances = s.cheapestPerformances.map(p => {
@@ -45,6 +48,7 @@ export default {
 
           return s
         })
+        this.$data.loading = false
       })
       .catch(err => console.error(err))
   }
@@ -54,7 +58,6 @@ export default {
 <style>
 #app {
   width: 970px !important;
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 </style>

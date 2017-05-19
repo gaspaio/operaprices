@@ -1,4 +1,3 @@
-const uuid = require('uuid')
 const moment = require('moment')
 const db = require('../db')
 const logger = require('../logging').logger
@@ -97,8 +96,8 @@ module.exports.start = async (time = null) => {
   CURR_CRAWL = await Crawl.start(time)
 }
 
-module.exports.stop = async (time = null) => {
-  return await CURR_CRAWL.stop()
+module.exports.stop = (time = null) => {
+  return CURR_CRAWL.stop()
 }
 
 module.exports.get = () => CURR_CRAWL

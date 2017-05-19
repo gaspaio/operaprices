@@ -2,23 +2,19 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('config')
 const db = require('sqlite')
-const moment = require('moment')
-const logging = require('./logging')
 const Show = require('./models/Show')
-const uuid = require('uuid')
 const Crawl = require('./models/Crawl')
 
 module.exports.CRAWL_DONE = 'DONE'
 module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
-
   let dbPath = path.join(config.get('db.location'), config.get('db.name'))
   if (!path.isAbsolute(dbPath)) dbPath = path.join('__dirname', '..', dbPath)
 
   return Promise.resolve()
     .then(() => db.open(dbPath, {cached: true}))
-  //.then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
+  // .then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
 }
 
 module.exports.close = () => {
@@ -40,8 +36,8 @@ module.exports.crawlStop = async crawl => {
 }
 
 module.exports.getLastCrawl = async () => {
-  let q = 'SELECT * FROM crawl ORDER BY startTime DESC LIMIT 1'
-  return await db.get(q).then(row => new Crawl.Crawl(row))
+  const row = await db.get('SELECT * FROM crawl ORDER BY startTime DESC LIMIT 1')
+  return new Crawl.Crawl(row)
 }
 
 // Prices
@@ -66,17 +62,17 @@ module.exports.upsertPerformance = async performance => {
 
 // Shows
 // options: active, saleOpen
-module.exports.getShows = async (options) => {
+module.exports.getShows = async options => {
   let q = 'SELECT * FROM show'
   const opts = Object.assign({active: null, saleOpen: null}, options)
 
   const wheres = []
-  if (options.active !== null) {
-    wheres.push(`endDate ${options.active ? '>' : '<'} ${utils.nowDate()}`)
+  if (opts.active !== null) {
+    wheres.push(`endDate ${opts.active ? '>' : '<'} ${utils.nowDate()}`)
   }
 
-  if (options.saleOpen !== null) {
-    wheres.push(`saleOpen = ${options.saleOpen ? 1 : 0}`)
+  if (opts.saleOpen !== null) {
+    wheres.push(`saleOpen = ${opts.saleOpen ? 1 : 0}`)
   }
 
   if (wheres.length) {
@@ -95,7 +91,7 @@ module.exports.getShow = async id => {
 }
 
 module.exports.upsertShow = async item => {
-  row = await db.get(`SELECT * FROM show WHERE slug='${item.slug}'`)
+  const row = await db.get(`SELECT * FROM show WHERE slug='${item.slug}'`)
 
   let show
   if (!row) show = new Show(item)
@@ -165,4 +161,3 @@ ORDER BY p.date ASC, c.startTime ASC`
   })
   return priceMap
 }
-

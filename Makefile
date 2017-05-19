@@ -26,6 +26,6 @@ prodsh:
 up:
 	@${ANSIBLE_CMD} -t $S ansible/playbook.yml
 dbup:
-	[ -f data/development.db ] && mv data/development.db data/development.db.bak
+	[ -f data/development.db ] && mv data/development.db data/development.db.bak || true
 	scp -i ansible/secrets/prod root@operaprices.rodolforipado.net:/data/production.db data/development.db
 
