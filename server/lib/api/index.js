@@ -2,7 +2,7 @@ const express = require('express')
 const utils = require('../utils')
 const db = require('../db')
 
-const apiRouter = module.exports = express.Router();
+const apiRouter = module.exports = express.Router()
 
 const showAddIncludes = async (showObj, includes, lastCrawl) => {
   if (!includes.includes('cheapest') && !includes.includes('tendency')) return showObj
@@ -15,7 +15,7 @@ const showAddIncludes = async (showObj, includes, lastCrawl) => {
   showObj.cheapestPerformances = showObj.tendency = null
   if (includes.includes('cheapest')) {
     showObj.cheapestPerformances = utils.findCheapestPerformances(priceMap, lastCrawl.startTime)
-    if (showObj.cheapestPerformances.length >0) {
+    if (showObj.cheapestPerformances.length > 0) {
       // All the cheapest perfs have the same price
       showObj.cheapestPrice = showObj.cheapestPerformances[0][1]
     }
@@ -56,7 +56,7 @@ apiRouter.get('/shows', utils.asyncWrapper(async (req, res) => {
 
 apiRouter.get('/shows/:id', utils.asyncWrapper(async (req, res) => {
   let includes = 'include' in req.query ? req.query.include : null
-  includes = includes !== null ? includes.split(',') : [];
+  includes = includes !== null ? includes.split(',') : []
 
   let show = await db.getShow(req.params.id)
 
@@ -70,4 +70,3 @@ apiRouter.get('/shows/:id', utils.asyncWrapper(async (req, res) => {
 
   res.json(showObj)
 }))
-

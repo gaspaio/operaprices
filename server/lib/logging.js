@@ -9,11 +9,10 @@ const logger = new (winston.Logger)({
       colorize: false
     })
   ]
-});
+})
 
 const requestLogger = expressWinston.logger({winstonInstance: logger})
 
 const errLogger = expressWinston.errorLogger({winstonInstance: logger})
 
 module.exports = {logger, requestLogger, errLogger}
-

@@ -1,11 +1,10 @@
 const utils = require('../utils')
-const database = require('../db')
-const Crawl = require('../models/Crawl')
-const moment = require('moment')
 
 module.exports = class Show {
   constructor (row = {}) {
-    Show.getFields(true).forEach(field => {this[field] = field in row ? row[field] : null})
+    Show.getFields(true).forEach(field => {
+      this[field] = field in row ? row[field] : null
+    })
 
     if (this.saleOpen !== null) {
       this.saleOpen = Boolean(this.saleOpen)
@@ -37,7 +36,10 @@ module.exports = class Show {
 
   toObject () {
     const out = {}
-    Show.getFields(true).forEach(f => out[f] = this[f])
+    Show.getFields(true).forEach(f => {
+      out[f] = this[f]
+    })
+
     return out
   }
 }

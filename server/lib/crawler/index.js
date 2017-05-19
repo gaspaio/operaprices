@@ -1,6 +1,4 @@
 const Rx = require('rx')
-const moment = require('moment')
-const inspect = require('util').inspect
 const logger = require('../logging').logger
 const extract = require('./extract')
 const persist = require('./persist')
@@ -25,7 +23,6 @@ const itemStats = item => {
 
   return item
 }
-
 
 const doCrawl = urls => {
   const pipeline = Rx.Observable.from(urls)
@@ -69,4 +66,3 @@ module.exports.crawl = () => {
     })
     .then(() => db.close())
 }
-

@@ -4,7 +4,7 @@ const Rx = require('rx')
 const Crawl = require('../models/Crawl')
 const utils = require('./utils')
 
-const getHtml = module.exports.getHtml = (url, wrapper) => {
+module.exports.getHtml = (url, wrapper) => {
   if (!url) {
     wrapper.html = null
     return Promise.resolve(wrapper)
@@ -25,7 +25,7 @@ const getHtml = module.exports.getHtml = (url, wrapper) => {
     })
 }
 
-const featuredItems = module.exports.featuredItems = (html, context) => {
+module.exports.featuredItems = (html, context) => {
   const $ = cheerio.load(html)
   const featured = $('body > div.content-wrapper > div.grid-row-prefooter > ul.FeaturedList > li > div.FeaturedList__card > div.FeaturedList__card-content')
   const items = []
@@ -45,11 +45,11 @@ const featuredItems = module.exports.featuredItems = (html, context) => {
   return items
 }
 
-const prices = module.exports.prices = (html, item) => {
+module.exports.prices = (html, item) => {
   item.prices = {}
   if (!html) return item
 
-  $ = cheerio.load(html)
+  const $ = cheerio.load(html)
   $('body > div.content-wrapper > section.grid-container > ul.PerformanceList > li').each((i, elem) => {
     // The past representations are still in the HTML but have display: None and empty tables
     if ($(elem).find('div.PerformanceList__item__table').text().indexOf('Représentation passée') !== -1) {
@@ -84,7 +84,7 @@ const prices = module.exports.prices = (html, item) => {
   return item
 }
 
-const saleInfo = module.exports.saleInfo = (html, item) => {
+module.exports.saleInfo = (html, item) => {
   item.buyUrl = item.saleOpen = item.saleStartDate = null
 
   if (!html) return item
@@ -123,4 +123,3 @@ const saleInfo = module.exports.saleInfo = (html, item) => {
 
   return item
 }
-

@@ -4,7 +4,7 @@ const logger = require('./lib/logging').logger
 const config = require('config')
 
 if (process.argv.length >= 2 && process.argv[2] === 'start') {
-  const crawlJob = new CronJob(
+  const crawlJob = new CronJob( // eslint-disable-line no-unused-vars
     config.get('crawler.cron'),
     () => crawler.crawl().catch(err => {
       console.error(err)
@@ -17,4 +17,3 @@ if (process.argv.length >= 2 && process.argv[2] === 'start') {
 } else {
   crawler.crawl().catch(err => console.error(err))
 }
-
