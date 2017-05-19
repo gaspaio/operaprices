@@ -14,6 +14,8 @@ if (!window.Promise) {
 }
 
 Vue.config.productionTip = false
+Vue.config.env = process.env.NODE_ENV
+Vue.config.app = process.env.APP_CONFIG
 
 /* eslint-disable no-new */
 new Vue({

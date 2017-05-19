@@ -1,66 +1,23 @@
 const express = require('express')
 const app = express()
+const db = require('./db')
 const bodyParser = require('body-parser')
 const logging = require('./logging')
-const db = require('./db')
 const config = require('config')
 const path = require('path')
 const utils = require('./utils')
+const apiRouter = require('./api')
+const cors = require('cors')
 
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development'
 }
 
 app.use(bodyParser.json())
+app.use(cors())
 
 // Serve client HTML and JS
 app.use(express.static(path.normalize(path.join(__dirname,'..','..','client','dist'))))
-
-const apiRouter = express.Router();
-
-apiRouter.get('/shows', utils.asyncWrapper(async (req, res) => {
-  // ?include=lowestActivePrice,tendency&active=false
-  const params = Object.assign({
-    include: null,
-    active: 'true'
-  }, req.query)
-
-  const includes = params.include !== null ? params.include.split(',') : []
-  const active = params.active != 'false'
-
-  const response = (lastCrawl, shows) => {
-    return {meta: {lastCrawl}, shows}
-  }
-
-  let shows = await db.getShows({active})
-
-  const lastCrawl = await db.getLastCrawl()
-
-  if (!includes.includes('cheapest') && !includes.includes('tendency')) {
-    res.json(response(lastCrawl, shows))
-    return
-  }
-
-  const priceMaps = await Promise.all(
-    shows.map(show => db.getLowestPerformancePrices(show.id))
-  )
-
-  shows = shows.map((show, i) => {
-    if (includes.includes('cheapest')) {
-      show.cheapestPerformances = utils.findCheapestPerformances(priceMaps[i], lastCrawl.time)
-    }
-    if (includes.includes('tendency')) {
-      show.tendency = utils.findCheapestTendency(priceMaps[i])
-    }
-    return show
-  })
-
-  res.json(response(lastCrawl, shows))
-}))
-
-apiRouter.get('shows/:id', (req, res) => {
-  // Get a single show by ID
-})
 
 app.use(logging.requestLogger)
 

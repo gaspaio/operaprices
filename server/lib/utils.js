@@ -53,7 +53,7 @@ module.exports.findCheapestTendency = priceMap => {
   let crawlMap = new Map()
   for (let [perf, series] of priceMap) {
     // For each performance
-    const dd = perf == 1499967000
+    // const dd = perf == 1499967000
     for(let i = 0, curr; i < series.length; i++) {
       if (!crawlMap.has(series[i][0])) {
         crawlMap.set(series[i][0], series[i][1])
@@ -65,6 +65,7 @@ module.exports.findCheapestTendency = priceMap => {
       }
     }
   }
+
   // Cast map to array and reverse sort
   const priceSeries = [...crawlMap]
   priceSeries.sort((i1, i2) => i2[0] - i1[0])

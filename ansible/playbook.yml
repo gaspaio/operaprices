@@ -1,6 +1,87 @@
 ---
-- include: system.yml
-  tags: system
+- hosts: app
+  vars:
+    docker_dcversion: 1.13.0
+  vars_files:
+    - secrets/vars.yml
 
-- include: app.yml
-  tags: app
+  tasks:
+    - block:
+      # Base utilities & dependencies
+      - apt: name="{{ item }}" state=present cache_valid_time=3600
+        with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+        - vim
+        - libsqlite3-dev
+        - fail2ban
+        - git
+        - make
+      # Docker
+      - apt_key: url="https://download.docker.com/linux/debian/gpg" id=0EBFCD88 state=present
+      - apt_repository:
+          repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+          state: present
+          update_cache: yes
+      - apt: name="docker-ce" state=latest cache_valid_time=3600
+      - systemd: name=docker enabled=yes
+      - get_url:
+          dest: /usr/local/bin/docker-compose-{{docker_dcversion}}
+          url: https://github.com/docker/compose/releases/download/1.13.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}
+          mode: 755
+      - file: state=link dest=/usr/local/bin/docker-compose src=/usr/local/bin/docker-compose-{{docker_dcversion}}
+      # Rsyslog + Loggle
+      - template: src=22-loggly.conf dest=/etc/rsyslog.d/22-loggly.conf
+        notify: rsyslog restart
+      - copy: src=rsyslog.conf dest=/etc/rsyslog.conf
+        notify: rsyslog restart
+      # Access & Security
+      - copy: src=sshd_config dest=/etc/ssh/sshd_config
+        notify: sshd restart
+      - copy: src=fail2ban.local dest=/etc/fail2ban/fail2ban.local
+        notify: fail2ban restart
+      tags:
+        - system
+
+    - block:
+      - name: Clone repo in temp location
+        git:
+          clone: yes
+          depth: 1
+          version: "{{ op_tag }}"
+          repo: https://github.com/gaspaio/operaprices.git
+          dest: /tmp/operaprices
+        tags: ['crawler', 'web']
+      - name: Ensure data dir exists
+        file: path=/data state=directory mode=0755
+        tags: ['crawler', 'web']
+      - name: rebuild crawler docker image
+        command: make build ENV={{ op_env }} S=crawler chdir=/tmp/operaprices
+        tags: ['crawler']
+      - name: redeploy crawler container
+        command: make deploy ENV={{ op_env }} S=crawler chdir=/tmp/operaprices
+        tags: ['crawler']
+      - name: rebuild web docker image
+        command: make build ENV={{ op_env }} S=web chdir=/tmp/operaprices
+        tags: ['web']
+      - name: redeploy web container
+        command: make deploy ENV={{ op_env }} S=web chdir=/tmp/operaprices
+        tags: ['web']
+      - name: remove temp location
+        file: path=/tmp/operaprices state=absent
+        tags: ['crawler', 'web']
+      tags: ['app']
+
+  handlers:
+  - name: rsyslog restart
+    service: name=rsyslog state=restarted
+
+  - name: sshd restart
+    service: name=sshd state=restarted
+
+  - name: fail2ban restart
+    service: name=fail2ban state=restarted
+

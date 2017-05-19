@@ -6,6 +6,10 @@ services:
     environment:
       - NODE_ENV=production
       - OP_DB_NAME=production.db
+    logging:
+        driver: syslog
+        options:
+          tag: crawler
     volumes:
       - /data:/data
   web:
@@ -14,5 +18,11 @@ services:
     environment:
       - NODE_ENV=production
       - OP_DB_NAME=production.db
+    logging:
+        driver: syslog
+        options:
+          tag: web
+    ports:
+      - "80:9999"
     volumes:
       - /data:/data
