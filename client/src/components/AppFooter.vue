@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer navbar-fixed-bottom">
+    <footer class="footer">
         <div class="container">
         <p>Updated daily. Upward / downward arrows indicate if the direction of the last price change in the last 3 days.<br />
             <strong>Last update: {{ updatedStr  }} CET</strong>
