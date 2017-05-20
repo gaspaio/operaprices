@@ -28,4 +28,3 @@ up:
 dbup:
 	[ -f data/development.db ] && mv data/development.db data/development.db.bak || true
 	scp -i ansible/secrets/prod root@operaprices.rodolforipado.net:/data/production.db data/development.db
-

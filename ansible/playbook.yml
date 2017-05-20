@@ -43,6 +43,8 @@
         notify: sshd restart
       - copy: src=fail2ban.local dest=/etc/fail2ban/fail2ban.local
         notify: fail2ban restart
+      - name: Ensure data dir exists
+        file: path=/data state=directory mode=0755
       tags:
         - system
 
@@ -54,9 +56,6 @@
           version: "{{ op_tag }}"
           repo: https://github.com/gaspaio/operaprices.git
           dest: /tmp/operaprices
-        tags: ['crawler', 'web']
-      - name: Ensure data dir exists
-        file: path=/data state=directory mode=0755
         tags: ['crawler', 'web']
       - name: rebuild crawler docker image
         command: make build ENV={{ op_env }} S=crawler chdir=/tmp/operaprices
