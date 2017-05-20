@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
     <app-header />
-    <router-view :shows="shows" :files="files"></router-view>
+    <router-view :shows="shows" :loading="loading"></router-view>
     <app-footer :lastUpdated='lastUpdated' />
   </div>
 </template>
@@ -18,8 +18,7 @@ export default {
     return {
       loading: true,
       lastUpdated: null,
-      shows: [],
-      files: []
+      shows: []
     }
   },
   components: {
@@ -49,6 +48,7 @@ export default {
 
           return s
         })
+        this.$data.loading = false
       })
       .catch(err => console.error(err))
   }
@@ -58,7 +58,6 @@ export default {
 <style>
 #app {
   width: 970px !important;
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 </style>

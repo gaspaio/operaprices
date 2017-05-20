@@ -1,5 +1,5 @@
 <template>
-    <div class="header clearfix">
+    <div class="header clearfix row">
         <div>
             <nav><ul class="nav nav-pills pull-right">
                 <li role="presentation"><router-link to="/">Home</router-link></li>
@@ -19,7 +19,7 @@ export default {
 
 <style>
 .header {
-  padding-bottom: 20px;
-/*  border-bottom: 1px solid #e5e5e5;*/
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
 }
 </style>

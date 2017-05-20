@@ -1,14 +1,14 @@
 <template>
-  <div class="row">
-    <h3>Currently on sale</h3>
+  <div class="row shows-sale-open">
+
     <table class='table show-list'>
       <thead>
-        <th></th><th class='price'>Lowest price</th><th class='perfs'>Performances</th>
+        <th><h3>Currently on sale</h3></th><th class='price'>Lowest price</th><th class='perfs'>Performances</th>
       </thead>
       <tbody>
       <tr v-for="show in showData">
         <td class='show-info'>
-          <h3><a :href="show.link" target="_blank">{{ show.title }}</a></h3>
+          <h4><a :href="show.link" target="_blank">{{ show.title }}</a></h4>
           <p class='author'>{{ show.author }}</p>
           <p class='location'> {{ show.dates }} | <strong>{{ show.location }}</strong></p>
         </td>
@@ -46,7 +46,7 @@ export default {
           dates: showDateString(show.startDate, show.endDate),
           minPrice: `${show.cheapestPrice} €`,
           tendency: show.tendency,
-          minPerfs: show.cheapestPerformances.map(p => `${singleDateString(p[0])} (${p[2]})`)
+          minPerfs: show.cheapestPerformances.map(p => `${singleDateString(p[0], 'long')} (${p[2]})`)
         }
       })
 
@@ -59,14 +59,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
+h4 {
+  font-size: 22px;
   margin-bottom: 0.2em;
   margin-top: 0.2em;
 }
 
+div.shows-sale-open {
+  margin-top: 20px;
+}
+
 p.author {
   font-weight: bold;
-  font-style: italic;
 }
 
 p.location {
@@ -76,10 +80,13 @@ p.location {
 
 th.price {
   text-align: center;
+  vertical-align: bottom;
 }
 
 th.perfs {
   padding-left: 20px;
+  width: 250px;
+  vertical-align: bottom;
 }
 
 td.show-price {

@@ -1,21 +1,20 @@
 <template>
   <div class="row">
-    <h3>Not yet on sale</h3>
+
     <table class="table show-list">
       <thead>
-        <th></th><th></th><th class='sales'>Sales open on</th>
+        <th><h3>Not yet on sale</h3></th><th /><th class='opens-on'>Sales open on</th>
       </thead>
       <tbody>
         <tr v-for="show in data">
-          <td>
-            <a :href="show.link" target="_blank"><strong>{{ show.title }}</strong></a>
-            <br />{{ show.author }}
+          <td class="title">
+            <a :href="show.link" target="_blank" class="title">{{ show.title }}</a>
+            <br /><span class="author">{{ show.author }}</span> | {{ show.location }}
           </td>
-          <td>
-            {{ show.dates }}<br/>
-            {{ show.location }}
+          <td class="dates">
+            {{ show.dates }}
           </td>
-          <td>
+          <td class="opens-on">
             {{ show.opensOn }}
           </td>
         </tr>
@@ -42,7 +41,7 @@ export default {
           start: s.startDate,
           location: s.location,
           dates: showDateString(s.startDate, s.endDate),
-          opensOn: singleDateString(s.saleStartDate)
+          opensOn: singleDateString(s.saleStartDate, 'medium')
         }
       })
 
@@ -54,5 +53,23 @@ export default {
 
 </script>
 <style scoped>
-
+h4 {
+  font-size: 22px;
+  margin: 0.2em 0;
+}
+.title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.author {
+  font-weight: bold;
+}
+td.dates, td.opens-on {
+  vertical-align: middle;
+  text-align: center;
+}
+th.opens-on {
+  vertical-align: bottom;
+  text-align: center;
+}
 </style>
