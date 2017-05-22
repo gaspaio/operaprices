@@ -18,7 +18,8 @@ export default {
     return {
       loading: true,
       lastUpdated: null,
-      shows: []
+      operas: [],
+      ballets: []
     }
   },
   components: {
@@ -30,7 +31,7 @@ export default {
       .then(res => res.json())
       .then(json => {
         this.$data.lastUpdated = json.meta.lastCrawl.startTime * 1000
-        this.$data.shows = json.shows.map(s => {
+        const shows = json.shows.map(s => {
           // convert all dates to JS dates from unix
           s.startDate *= 1000
           s.endDate *= 1000
@@ -48,9 +49,18 @@ export default {
 
           return s
         })
+        this.$data.operas = shows.filter(s => s.type === 'opera')
+        this.$data.ballets = shows.filter(s => s.type === 'ballet')
         this.$data.loading = false
       })
       .catch(err => console.error(err))
+  },
+  computed: {
+    shows: function () {
+      if (this.$route.name === 'operas') return this.$data.operas
+      if (this.$route.name === 'ballets') return this.$data.ballets
+      return []
+    }
   }
 }
 </script>

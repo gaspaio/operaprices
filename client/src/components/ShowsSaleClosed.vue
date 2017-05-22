@@ -9,7 +9,7 @@
         <tr v-for="show in data">
           <td class="title">
             <a :href="show.link" target="_blank" class="title">{{ show.title }}</a>
-            <br /><span class="author">{{ show.author }}</span> | {{ show.location }}
+            <br /><span class="author" v-if='show.author'>{{ show.author }}</span><span v-if='show.author'> |</span> {{ show.location }}
           </td>
           <td class="dates">
             {{ show.dates }}

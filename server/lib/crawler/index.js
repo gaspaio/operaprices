@@ -25,14 +25,16 @@ const itemStats = item => {
 }
 
 const doCrawl = urls => {
-  const pipeline = Rx.Observable.from(urls)
-    .flatMap(url => extract.getHtml(url, {}))
+  const pipeline = Rx.Observable.from(urls.map(url => { return {url} }))
+    .flatMap(obj => extract.getHtml(obj))
     .filter(obj => obj.html !== null)
-    .flatMap(obj => extract.featuredItems(obj.html))
-    .flatMap(item => extract.getHtml(item.url, {item}))
-    .map(obj => extract.saleInfo(obj.html, obj.item))
-    .flatMap(item => extract.getHtml(item.buyUrl, {item}))
-    .map(obj => extract.prices(obj.html, obj.item))
+    .flatMap(obj => extract.featuredItems(obj))
+    .flatMap(item => extract.getHtml({url: item.url, item}))
+    .filter(obj => obj.html !== null )
+    .map(obj => extract.saleInfo(obj)) // .url, .item, .html
+    .flatMap(item => extract.getHtml({url: item.buyUrl, item}))
+    .filter(obj => obj.html !== null)
+    .map(obj => extract.prices(obj))
     .do(item => itemStats(item))
 
     // Persist everything
@@ -49,7 +51,9 @@ const doCrawl = urls => {
 module.exports.crawl = () => {
   const urls = [
     'https://www.operadeparis.fr/saison-16-17/opera',
-    'https://www.operadeparis.fr/saison-17-18/opera'
+    'https://www.operadeparis.fr/saison-17-18/opera',
+    'https://www.operadeparis.fr/saison-16-17/ballet',
+    'https://www.operadeparis.fr/saison-17-18/ballet'
   ]
 
   return db.open()

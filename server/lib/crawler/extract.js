@@ -4,36 +4,39 @@ const Rx = require('rx')
 const Crawl = require('../models/Crawl')
 const utils = require('./utils')
 
-module.exports.getHtml = (url, wrapper) => {
-  if (!url) {
-    wrapper.html = null
-    return Promise.resolve(wrapper)
+module.exports.getHtml = (obj) => {
+  if (!obj || !('url' in obj)) {
+    obj.html = null
+    return Promise.resolve(obj)
   }
 
   Crawl.get().incStat('requests')
-  return fetch(url)
+  return fetch(obj.url)
     .then(res => res.text())
     .then(html => {
-      wrapper.html = html
-      return wrapper
+      obj.html = html
+      return obj
     })
     .catch(err => {
       err.message = `HTML Fetching ${url}: ${err.message}`
+      err.ctxt = obj.url
       Crawl.get().addError(err)
-      wrapper.html = null
-      return wrapper
+      obj.html = null
+      return obj
     })
 }
 
-module.exports.featuredItems = (html, context) => {
-  const $ = cheerio.load(html)
+module.exports.featuredItems = (obj) => {
+  const $ = cheerio.load(obj.html)
   const featured = $('body > div.content-wrapper > div.grid-row-prefooter > ul.FeaturedList > li > div.FeaturedList__card > div.FeaturedList__card-content')
   const items = []
-  featured.each((i, item) => {
+  featured.each((i, box) => {
     try {
-      items.push(utils.featuredItem($(item)))
+      const item = utils.featuredItem($(box))
+      if (['opera', 'ballet'].includes(item.type)) items.push(item)
     } catch (err) {
       err.message = `Item extraction: ${err.message}`
+      err.ctxt = `${obj.url}#${i}`
       Crawl.get().addError(err)
     }
   })
@@ -45,11 +48,13 @@ module.exports.featuredItems = (html, context) => {
   return items
 }
 
-module.exports.prices = (html, item) => {
+module.exports.prices = (obj) => {
+  const item = obj.item
   item.prices = {}
-  if (!html) return item
 
-  const $ = cheerio.load(html)
+  if (!obj.html) return item
+
+  const $ = cheerio.load(obj.html)
   $('body > div.content-wrapper > section.grid-container > ul.PerformanceList > li').each((i, elem) => {
     // The past representations are still in the HTML but have display: None and empty tables
     if ($(elem).find('div.PerformanceList__item__table').text().indexOf('Représentation passée') !== -1) {
@@ -63,6 +68,7 @@ module.exports.prices = (html, item) => {
       date = utils.performanceDate(day, hour)
     } catch (err) {
       err.message = `Price extract for ${item.buyLink} failed. ${err.message}`
+      err.ctxt = obj.url
       Crawl.get().addError(err)
       return item
     }
@@ -76,6 +82,7 @@ module.exports.prices = (html, item) => {
         item.prices[date].push({available, cat, price})
       } catch (err) {
         err.message = `price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`
+        err.ctxt = obj.url
         Crawl.get().addError(err)
       }
     })
@@ -84,12 +91,13 @@ module.exports.prices = (html, item) => {
   return item
 }
 
-module.exports.saleInfo = (html, item) => {
+module.exports.saleInfo = (obj) => {
+  const item = obj.item
   item.buyUrl = item.saleOpen = item.saleStartDate = null
 
-  if (!html) return item
+  if (!obj.html) return item
 
-  const $ = cheerio.load(html)
+  const $ = cheerio.load(obj.html)
   const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
 
   let buyUrl = $(linkBox).children().first().attr('href')
@@ -100,14 +108,19 @@ module.exports.saleInfo = (html, item) => {
   }
 
   const buyBox = $(linkBox).children().first()
+  let err
   if (!buyBox) {
-    Crawl.get().addError(Error(`URL ${item.url} doesnt contain a buy box nor a buy link. Investigate further.`))
+    err = Error(`URL ${obj.url} doesnt contain a buy box nor a buy link. Investigate further.`)
+    err.ctxt = obj.url
+    Crawl.get().addError(err)
     return item
   }
 
   const url = $(buyBox).find('a').attr('href').trim()
   if (!url) {
-    Crawl.get().addError(Error(`URL ${item.url} contains a buy box but no link inside. Investigate further.`))
+    err = Error(`URL ${obj.url} contains a buy box but no link inside. Investigate further.`)
+    err.ctxt = obj.url
+    Crawl.get().addError(err)
     return item
   }
 
@@ -118,6 +131,7 @@ module.exports.saleInfo = (html, item) => {
     item.saleStartDate = utils.saleDate($(buyBox).text())
   } catch (err) {
     err.message = `Url ${url}: ${err.message}`
+    err.ctxt = obj.url
     Crawl.get().addError(err)
   }
 

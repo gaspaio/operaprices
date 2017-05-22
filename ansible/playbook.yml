@@ -43,8 +43,7 @@
         notify: sshd restart
       - copy: src=fail2ban.local dest=/etc/fail2ban/fail2ban.local
         notify: fail2ban restart
-      - name: Ensure data dir exists
-        file: path=/data state=directory mode=0755
+      - file: path=/data state=directory mode=0755
       tags:
         - system
 

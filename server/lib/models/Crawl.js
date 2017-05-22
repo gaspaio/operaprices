@@ -39,6 +39,9 @@ class Crawl {
       err = Error(`Param should be instance of Error: ${err}`)
     }
 
+    if ('ctxt' in err) {
+      err.message = `[${err.ctxt}] ${err.message}`
+    }
     logger.error(err.message, err)
     const e = {message: err.message, stack: err.stack.split('\n').map(s => s.trim())}
     this.errors.push(e)

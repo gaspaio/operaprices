@@ -14,7 +14,10 @@ module.exports.open = () => {
 
   return Promise.resolve()
     .then(() => db.open(dbPath, {cached: true}))
-  // .then(() => db.migrate({force: false, migrationsPath: path.join(basePath, 'migrations')}))
+//    .then(() => db.migrate({
+//      force: false,
+//      migrationsPath: path.join('__dirname', '..', 'db', 'migrations')
+//    }))
 }
 
 module.exports.close = () => {

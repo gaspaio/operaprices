@@ -15,9 +15,6 @@ ANSIBLE_CMD = PYTHONUNBUFFERED=1 ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no' 
 
 crawl:
 	@docker run --rm -ti -v $(realpath data):/data -e "NODE_ENV=${NODE_ENV}" -e "OP_DB_NAME=${NODE_ENV}.db" ${CRAWLER_IMG} crawl
-buildweb:
-	@cd client && yarn build
-	@rm -rf server/static/* && cp -r client/dist/* server/static/
 start:
 	@${DC_CMD} up
 build:
@@ -31,3 +28,7 @@ up:
 dbup:
 	[ -f data/development.db ] && mv data/development.db data/development.db.bak || true
 	scp -i ansible/secrets/prod root@operaprices.rodolforipado.net:/data/production.db data/development.db
+buildweb:
+	@cd client && yarn build
+	@rm -rf server/static/* && cp -r client/dist/* server/static/
+

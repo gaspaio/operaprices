@@ -11,10 +11,19 @@ const showType = str => {
   let ret = ''
   switch (type) {
     case 'Opéra':
+    case 'Opéra-Académie':
+      ret = 'opera'
       ret = 'opera'
       break
-    case 'Opéra-Académie':
-      ret = 'opera_academie'
+    case 'Evénement-Opéra':
+      ret = 'opera_event'
+      break
+    case 'Ballet':
+    case 'Ballet-Académie':
+      ret = 'ballet'
+      break
+    case 'Evénement-Ballet':
+      ret = 'ballet_event'
       break
     default:
       throw Error(`Unknown show type string :${str}`)
@@ -55,7 +64,7 @@ const featuredItem = html => {
   item.slug = link2slug(item.url)
 
   item.author = html.find('div.FeaturedList__card-title > p > span').text().trim()
-  if (!item.author) throw new Error(`No author found.`)
+  // if (!item.author) throw new Error(`No author found.`) - Ballets can not have an author
 
   item.type = showType(html.find('div.FeaturedList__card-title > p').text().replace(item.author, ''))
   if (!item.type) throw new Error(`Unknown type.`)
