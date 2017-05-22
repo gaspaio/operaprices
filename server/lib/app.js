@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 // Serve client HTML and JS
-app.use(express.static(path.normalize(path.join(__dirname, '..', '..', 'client', 'dist'))))
+app.use(express.static(path.normalize(path.join(__dirname, '..', 'static'))))
 
 app.use(logging.requestLogger)
 
