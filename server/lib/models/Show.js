@@ -21,7 +21,6 @@ module.exports = class Show {
   }
 
   get active () {
-    console.log('here')
     return this.endDate >= utils.nowDate()
   }
 

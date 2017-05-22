@@ -9,13 +9,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Shows',
+      name: 'operas',
+      component: Shows,
+      props: true
+    },
+    {
+      path: '/ballets',
+      name: 'ballets',
       component: Shows,
       props: true
     },
     {
       path: '/about',
-      name: 'About',
+      name: 'about',
       component: About,
       props: true
     }

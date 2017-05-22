@@ -9,7 +9,7 @@
       <tr v-for="show in showData">
         <td class='show-info'>
           <h4><a :href="show.link" target="_blank">{{ show.title }}</a></h4>
-          <p class='author'>{{ show.author }}</p>
+          <p class='author' v-if='show.author'>{{ show.author }}</p>
           <p class='location'> {{ show.dates }} | <strong>{{ show.location }}</strong></p>
         </td>
         <td class='show-price'>
@@ -36,19 +36,21 @@ export default {
   props: ['shows'],
   computed: {
     showData: function () {
-      const tmp = this.shows.map(show => {
-        return {
-          title: show.title,
-          link: show.buyUrl,
-          start: show.startDate,
-          author: show.author,
-          location: show.location,
-          dates: showDateString(show.startDate, show.endDate),
-          minPrice: `${show.cheapestPrice} €`,
-          tendency: show.tendency,
-          minPerfs: show.cheapestPerformances.map(p => `${singleDateString(p[0], 'long')} (${p[2]})`)
-        }
-      })
+      const tmp = this.shows
+        .filter(show => show.cheapestPerformances.length > 0)  // Filter out sold out shows
+        .map(show => {
+          return {
+            title: show.title,
+            link: show.buyUrl,
+            start: show.startDate,
+            author: show.author,
+            location: show.location,
+            dates: showDateString(show.startDate, show.endDate),
+            minPrice: `${show.cheapestPrice} €`,
+            tendency: show.tendency,
+            minPerfs: show.cheapestPerformances.map(p => `${singleDateString(p[0], 'long')} (${p[2]})`)
+          }
+        })
 
       tmp.sort((s1, s2) => s1.start - s2.start)
       return tmp

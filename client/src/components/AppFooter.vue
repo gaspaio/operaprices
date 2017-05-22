@@ -1,8 +1,7 @@
 <template>
     <footer class="footer row">
-        <p>Updated daily. Upward / downward arrows indicate if the direction of the last price change in the last 3 days.<br />
-            <strong>Last update: {{ updatedStr  }} CET</strong>
-        </p>
+      <p>Updated daily. Upward / downward arrows indicate if the direction of the last price change in the last 3 days.</p>
+      <p v-if='updatedStr !== null' ><strong>Last update: {{ updatedStr  }} CET</strong></p>
     </footer>
 </template>
 
@@ -14,7 +13,7 @@ export default {
   props: ['lastUpdated'],
   computed: {
     updatedStr: function () {
-      return moment.tz(this.lastUpdated, 'Europe/Paris').format('DD MMMM YYYY, h[h]mm')
+      return this.lastUpdated ? moment.tz(this.lastUpdated, 'Europe/Paris').format('DD MMMM YYYY, HH[h]mm') : null
     }
   }
 }
