@@ -17,6 +17,7 @@
         - software-properties-common
         - vim
         - libsqlite3-dev
+        - sqlite3
         - fail2ban
         - git
         - make
