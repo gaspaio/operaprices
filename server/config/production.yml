@@ -1,3 +1,2 @@
 ---
-logger:
-  level: info
+logger_level: info

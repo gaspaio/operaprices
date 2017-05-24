@@ -9,9 +9,8 @@ module.exports.CRAWL_DONE = 'DONE'
 module.exports.CRAWL_STARTED = 'STARTED'
 
 module.exports.open = () => {
-  let dbPath = path.join(config.get('db.location'), config.get('db.name'))
-  if (!path.isAbsolute(dbPath)) dbPath = path.join('__dirname', '..', dbPath)
-
+  const dbPath = path.join(utils.dataDir(), `${process.env.NODE_ENV}.db`)
+  console.log(dbPath)
   return Promise.resolve()
     .then(() => db.open(dbPath, {cached: true}))
 //    .then(() => db.migrate({
@@ -134,7 +133,7 @@ module.exports.upsertShow = async item => {
 module.exports.getLowestPerformancePrices = async (showId, options) => {
   // For each active performance of show, get the series of cheapest prices
   options = Object.assign({
-    time: utils.now() - config.get('db.default_time_window') * 60 * 60
+    time: utils.now() - config.get('shows_time_window') * 60 * 60
   }, options)
 
   let q = `SELECT

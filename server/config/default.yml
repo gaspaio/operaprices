@@ -1,11 +1,6 @@
 ---
-server:
-  port: 9999
-logger:
-  level: info
-db:
-  name: default.db
-  location: ../data
-  default_time_window: 72  # hours
-crawler:
-  cron: '00 28 * * * *'
+logger_level: info
+data_dir: ../data
+shows_time_window: 72      # hours
+crawler_cron: '00 28 * * * *'
+

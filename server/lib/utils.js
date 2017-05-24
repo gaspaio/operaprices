@@ -1,4 +1,13 @@
 const moment = require('moment')
+const config = require('config')
+const path = require('path')
+
+module.exports.dataDir = () => {
+  let dir = path.join(config.get('data_dir'))
+  if (!path.isAbsolute(dir)) dir = path.normalize(path.join('__dirname', '..', dir))
+
+  return dir
+}
 
 module.exports.nowDate = () => {
   return moment().utc().hour(12).minutes(0).seconds(0).milliseconds(0).unix()

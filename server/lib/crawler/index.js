@@ -2,7 +2,9 @@ const Rx = require('rx')
 const logger = require('../logging').logger
 const extract = require('./extract')
 const persist = require('./persist')
+const apizer = require('./apizer')
 const Crawl = require('../models/Crawl')
+
 const db = require('../db')
 
 const itemStats = item => {
@@ -60,6 +62,7 @@ module.exports.crawl = () => {
     .then(() => Crawl.start())
     .then(() => doCrawl(urls))
     .then(() => Crawl.stop())
+    .then(() => apizer.generate())
     .catch(err => {
       if (Crawl.get()) {
         Crawl.get().addError(err)

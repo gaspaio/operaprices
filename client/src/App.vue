@@ -8,7 +8,7 @@
 
 <script>
 
-import Vue from 'vue'
+// import Vue from 'vue'
 import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 
@@ -27,7 +27,7 @@ export default {
     'app-footer': AppFooter
   },
   created: function () {
-    fetch(`${Vue.config.app.apiUrl}/shows?active=true&include=cheapest,tendency`, {mode: 'cors'})
+    fetch(`/static/json/shows.json`)
       .then(res => res.json())
       .then(json => {
         this.$data.lastUpdated = json.meta.lastCrawl.startTime * 1000
