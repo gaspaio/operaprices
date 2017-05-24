@@ -1,5 +1,0 @@
----
-common_hostname: 'devmachine'
-op_tag: master
-op_env: dev
-
