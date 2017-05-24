@@ -36,7 +36,7 @@ export default {
       const tmp = this.shows.map(s => {
         return {
           title: s.title,
-          link: s.buyLink,
+          link: s.buyUrl,
           author: s.author,
           start: s.startDate,
           location: s.location,

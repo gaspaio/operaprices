@@ -1,34 +1,38 @@
-CRAWLER_IMG = docker_crawler
-
 # ENV: prod, dev
-# S: system, web, crawler, app
+# S: system, crawler
+# T: image version for build and pushes
 
-# dev, prod
-ifeq (${ENV}, 'prod')
-	NODE_ENV = production
-else
-	NODE_ENV = development
-endif
-
-DC_CMD = docker-compose -f docker/docker-compose.yml -f docker/${ENV}.yml
 ANSIBLE_CMD = PYTHONUNBUFFERED=1 ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no' ansible-playbook -v -i ansible/inventory -l ${ENV}
 
 crawl:
-	@docker run --rm -ti -v $(realpath data):/data -e "NODE_ENV=${NODE_ENV}" -e "OP_DB_NAME=${NODE_ENV}.db" ${CRAWLER_IMG} crawl
-start:
-	@${DC_CMD} up
+	@cd crawler && yarn crawler:crawl:dev
+web-jsonup:
+	@rm -rf client/static/json/*
+	@cp -r data/json/* client/static/json/
+web-push:
+	@./scripts/webpush.sh
+
 build:
-	@${DC_CMD} build --no-cache --force-rm $S
-deploy:
-	@${DC_CMD} up --no-deps -d $S
+	@docker build --force-rm --no-cache -t eu.gcr.io/operaprices/crawler:$T docker/crawler
+push:
+	@gcloud docker -- push eu.gcr.io/operaprices/crawler:$T
 prodsh:
 	@ssh -i ansible/secrets/prod root@operaprices.rodolforipado.net
 up:
 	@${ANSIBLE_CMD} -t $S ansible/playbook.yml
+
+vminit:
+	vagrant up
+	${ANSIBLE_CMD} -t system ansible/playbook.yml
 dbup:
 	[ -f data/development.db ] && mv data/development.db data/development.db.bak || true
 	scp -i ansible/secrets/prod root@operaprices.rodolforipado.net:/data/production.db data/development.db
+vmstart: vminit dbup
+	scp -i ansible/secrets/dev.private data/development.db root@192.168.33.10:/data/
+	${ANSIBLE_CMD} -t crawler ansible/playbook.yml
+
+dbexport:
+	@./scripts/dbexport.sh
 buildweb:
 	@cd client && yarn build
-	@rm -rf server/static/* && cp -r client/dist/* server/static/
 

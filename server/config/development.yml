@@ -1,6 +1,0 @@
----
-logger:
-  level: debug
-db:
-  name: development.db
-

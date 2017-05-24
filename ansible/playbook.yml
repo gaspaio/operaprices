@@ -10,6 +10,7 @@
       # Base utilities & dependencies
       - apt: name="{{ item }}" state=present cache_valid_time=3600
         with_items:
+        - ntp
         - apt-transport-https
         - ca-certificates
         - curl
@@ -34,6 +35,7 @@
           url: https://github.com/docker/compose/releases/download/1.13.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}
           mode: 755
       - file: state=link dest=/usr/local/bin/docker-compose src=/usr/local/bin/docker-compose-{{docker_dcversion}}
+      - copy: src=secrets/regviewer_key.json dest=/etc/docker/gcr_key.json mode=440
       # Rsyslog + Loggle
       - template: src=22-loggly.conf dest=/etc/rsyslog.d/22-loggly.conf
         notify: rsyslog restart
@@ -45,34 +47,18 @@
       - copy: src=fail2ban.local dest=/etc/fail2ban/fail2ban.local
         notify: fail2ban restart
       - file: path=/data state=directory mode=0755
+      - file: path=/data/json state=directory mode=0755
       tags:
         - system
 
     - block:
-      - name: Clone repo in temp location
-        git:
-          clone: yes
-          depth: 1
-          version: "{{ op_tag }}"
-          repo: https://github.com/gaspaio/operaprices.git
-          dest: /tmp/operaprices
-        tags: ['crawler', 'web']
-      - name: rebuild crawler docker image
-        command: make build ENV={{ op_env }} S=crawler chdir=/tmp/operaprices
-        tags: ['crawler']
+      - name: Push docker-compose file
+        template: src=docker-compose.yml.j2 dest=/etc/docker/docker-compose.yml mode=644
+      - name: login to docker registry
+        shell: docker login -u _json_key -p "$(cat /etc/docker/gcr_key.json)" https://eu.gcr.io
       - name: redeploy crawler container
-        command: make deploy ENV={{ op_env }} S=crawler chdir=/tmp/operaprices
-        tags: ['crawler']
-      - name: rebuild web docker image
-        command: make build ENV={{ op_env }} S=web chdir=/tmp/operaprices
-        tags: ['web']
-      - name: redeploy web container
-        command: make deploy ENV={{ op_env }} S=web chdir=/tmp/operaprices
-        tags: ['web']
-      - name: remove temp location
-        file: path=/tmp/operaprices state=absent
-        tags: ['crawler', 'web']
-      tags: ['app']
+        command: docker-compose -f /etc/docker/docker-compose.yml up -d
+      tags: ['crawler']
 
   handlers:
   - name: rsyslog restart

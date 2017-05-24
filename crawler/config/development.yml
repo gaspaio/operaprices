@@ -1,0 +1,3 @@
+---
+logger_level: debug
+push_api: true
