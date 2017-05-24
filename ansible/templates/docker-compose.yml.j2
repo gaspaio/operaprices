@@ -1,0 +1,14 @@
+version: "3"
+services:
+  crawler:
+    image: eu.gcr.io/operaprices/crawler:{{ docker_container_version }}
+    restart: always
+    environment:
+      - NODE_ENV={{ op_node_env }}
+    logging:
+      driver: syslog
+      options:
+        tag: crawler
+    volumes:
+      - /data:/data
+

@@ -1,0 +1,5 @@
+---
+logger_level: debug
+tmp_dir: /tmp
+data_dir: ../data
+push_api: false

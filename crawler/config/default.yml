@@ -1,0 +1,7 @@
+---
+logger_level: info
+shows_time_window: 72      # hours
+crawler_cron: '00 28 * * * *'
+tmp_dir: /tmp
+data_dir: ../data
+push_api: false

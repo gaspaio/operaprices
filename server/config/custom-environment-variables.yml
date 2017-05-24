@@ -1,7 +1,0 @@
----
-server:
-  port: OP_SERVER_PORT
-db:
-  name: OP_DB_NAME
-  location: OP_DATA_DIR
-
