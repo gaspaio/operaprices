@@ -1,9 +1,9 @@
 {
   "meta": {
     "lastCrawl": {
-      "startTime": 1496491543,
-      "endTime": 1496491548,
-      "duration": 5,
+      "startTime": 1496492375,
+      "endTime": 1496492395,
+      "duration": 20,
       "stats": {
         "requests": 9,
         "total_items": 4,
@@ -35,7 +35,7 @@
       "startDate": 1494936000,
       "endDate": 1497441600,
       "createdAt": 1495092480,
-      "updatedAt": 1496491543,
+      "updatedAt": 1496492375,
       "cheapestPerformances": [
         [
           1496511000,
@@ -75,7 +75,7 @@
       "startDate": 1495886400,
       "endDate": 1498564800,
       "createdAt": 1495092480,
-      "updatedAt": 1496491543,
+      "updatedAt": 1496492375,
       "cheapestPerformances": [
         [
           1496665800,
@@ -166,7 +166,7 @@
       "startDate": 1497096000,
       "endDate": 1499947200,
       "createdAt": 1495092480,
-      "updatedAt": 1496491543,
+      "updatedAt": 1496492375,
       "cheapestPerformances": [
         [
           1498843800,
@@ -403,7 +403,7 @@
       "startDate": 1488888000,
       "endDate": 1500206400,
       "createdAt": 1495092480,
-      "updatedAt": 1496491543,
+      "updatedAt": 1496492375,
       "cheapestPerformances": [
         [
           1498152600,
