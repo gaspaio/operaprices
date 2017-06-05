@@ -1,4 +1,6 @@
 ---
 logger_level: info
 push_api: true
+data_dir: /data
+tmp_dir: /tmp
 

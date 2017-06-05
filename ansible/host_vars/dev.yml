@@ -3,4 +3,4 @@ common_hostname: 'devmachine'
 op_tag: master
 loggly_tag: op-dev
 op_node_env: development
-docker_container_version: 0.0.11
+docker_container_version: 0.0.12

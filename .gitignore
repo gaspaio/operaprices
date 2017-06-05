@@ -7,7 +7,7 @@ client/static/json/*
 !client/static/json/.gitkeep
 !client/dist/.gitkeep
 
-server/config/local.yml
+crawler/config/local.yml
 
 data/*
 !data/.gitkeep
