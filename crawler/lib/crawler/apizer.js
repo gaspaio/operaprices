@@ -50,7 +50,12 @@ module.exports.update = async () => {
   return new Promise((resolve, reject) => {
     // TODO Delete all files in filesPath
     fs.writeFile(`${filesPath}/shows.json`, JSON.stringify(shows, null, '  '), err => {
-      if (err) reject(err)
+      if (err) {
+        err.ctxt = 'JSON file write'
+        reject(err)
+        return
+      }
+
       logger.info(`Generated api files at ${filesPath}`)
       resolve()
     })
@@ -65,7 +70,7 @@ module.exports.update = async () => {
 
     proc.on('exit', code => {
       if (code === 0) {
-        logger.info('Succefully pushed API files to repo')
+        logger.info('No errors when pushing API files to repo')
         logger.debug('git output: ', out)
         resolve(code)
       } else {
