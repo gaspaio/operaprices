@@ -2,7 +2,9 @@
 
 set -x
 set -e
-make buildweb
+cd client
+yarn build
+cd ..
 
 rm -rf /tmp/op
 git clone --depth 1 -b gh-pages git@github.com:gaspaio/operaprices.git /tmp/op

@@ -1,7 +1,7 @@
 {
-  "name": "opera",
+  "name": "operaprices-web",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "",
   "author": "Gaspaio <ggaspaio@gmail.com>",
   "private": true,
   "scripts": {

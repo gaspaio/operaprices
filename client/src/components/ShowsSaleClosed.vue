@@ -38,6 +38,7 @@ export default {
           title: s.title,
           link: s.buyUrl,
           author: s.author,
+          sale: s.saleStartDate,
           start: s.startDate,
           location: s.location,
           dates: showDateString(s.startDate, s.endDate),
@@ -45,7 +46,11 @@ export default {
         }
       })
 
-      tmp.sort((s1, s2) => s1.start - s2.start)
+      tmp.sort((s1, s2) => {
+        const dd = s1.sale - s2.sale
+        if (dd !== 0) return dd
+        return s1.start - s2.start
+      })
       return tmp
     }
   }
