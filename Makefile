@@ -34,4 +34,5 @@ jsonup:
 
 dbexport:
 	@./scripts/dbexport.sh
-
+sqlsh:
+	@sqlite3 data/development.db
