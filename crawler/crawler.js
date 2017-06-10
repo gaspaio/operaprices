@@ -17,4 +17,3 @@ if (process.argv.length >= 2 && process.argv[2] === 'start') {
 } else {
   crawler.crawl().catch(err => console.error(err))
 }
-

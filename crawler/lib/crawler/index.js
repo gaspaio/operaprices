@@ -32,7 +32,7 @@ const doCrawl = urls => {
     .filter(obj => obj.html !== null)
     .flatMap(obj => extract.featuredItems(obj))
     .flatMap(item => extract.getHtml({url: item.url, item}))
-    .filter(obj => obj.html !== null )
+    .filter(obj => obj.html !== null)
     .map(obj => extract.saleInfo(obj)) // .url, .item, .html
     .flatMap(item => extract.getHtml({url: item.buyUrl, item}))
     .filter(obj => obj.html !== null)
@@ -64,7 +64,6 @@ module.exports.crawl = () => {
     .then(() => Crawl.stop())
     .then(() => apizer.update())
     .catch(err => {
-
       const meta = 'meta' in err ? err.meta : {}
       let message = err.message
 

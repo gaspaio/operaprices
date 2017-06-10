@@ -5,11 +5,19 @@ import math
 
 def augment_data(data):
     # Shows
-    data['show']['runlength'] = data['show'].endDate - data['show'].startDate
+    data['show']['comp_runlength_days'] = data['show'].apply(lambda x: (x.endDate - x.startDate).days, axis=1)
     perfCounts = data['performance'].showId.value_counts()
-    data['show']['performances'] = data['show'].id.apply(lambda id: perfCounts[id])
-    data['show']['presale_time'] = data['show'].startDate - data['show'].saleStartDate
+    data['show']['comp_performance_nb'] = data['show'].id.apply(lambda id: perfCounts[id])
+    data['show']['comp_presale_days'] = data['show'].apply(
+        lambda x: (x.startDate - x.saleStartDate).days if x.saleStartDate is not None else 0, axis=1
+    )
 
+    cs = data['crawl']
+    data['generics'] = {}
+    data['generics']['crawl_nb'] = len(cs)
+    data['generics']['crawl_from'] = cs.startTime.min()
+    data['generics']['crawl_to'] = cs.startTime.to()
+    data['generics']['err_nb'] = cs.errors.sum()
     return data
 
 def load_data():
@@ -61,3 +69,4 @@ def load_data():
     })
 
     return augment_data(out)
+

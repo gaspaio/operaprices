@@ -9,4 +9,3 @@ module.exports = new (winston.Logger)({
     })
   ]
 })
-

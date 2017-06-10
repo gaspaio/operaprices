@@ -65,8 +65,12 @@ module.exports.update = async () => {
     const out = {stdout: '', stderr: ''}
 
     const proc = exec(cmd)
-    proc.stdout.on('data', data => out.stdout += data)
-    proc.stderr.on('data', data => out.stderr += data)
+    proc.stdout.on('data', data => {
+      out.stdout += data
+    })
+    proc.stderr.on('data', data => {
+      out.stderr += data
+    })
 
     proc.on('exit', code => {
       if (code === 0) {
@@ -86,4 +90,3 @@ module.exports.update = async () => {
     })
   }))
 }
-

@@ -18,9 +18,7 @@ module.exports.getHtml = (obj) => {
       return obj
     })
     .catch(err => {
-      err.message = `HTML Fetching ${url}: ${err.message}`
-      err.ctxt = obj.url
-      Crawl.get().addError(err)
+      Crawl.get().addError(`HTML Fetching ${obj.url}: ${err.message}`, {ctxt: obj.url})
       obj.html = null
       return obj
     })
@@ -77,7 +75,6 @@ module.exports.prices = (obj) => {
         const price = parseInt($(row).children('span.PerformanceTable__price').first().text().trim().split(' ')[0])
         item.prices[date].push({available, cat, price})
       } catch (err) {
-        err.message = `price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`
         Crawl.get().addError(
           `price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`,
           {ctxt: obj.url}
@@ -96,44 +93,67 @@ module.exports.saleInfo = (obj) => {
   if (!obj.html) return item
 
   const $ = cheerio.load(obj.html)
-  const linkBox = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
+  const sidebar = $('body > div.content-wrapper > div.grid-container.Programmation__opera-show > div > div.Programmation__aside.grid-aside.desktop-and-up > div')
 
-  let buyUrl = $(linkBox).children().first().attr('href')
-  if (buyUrl) {
-    item.buyUrl = buyUrl
+  /*
+   * 3 known cases:
+   * - 1) Before opening: first child is a <p> with the opening date and a buyLink (Voir les séances)
+   * - 2) Open for sale and places available: the first child is a <a> with a buyLink (Réserver)
+   * - 3) No more places available: first child the the div.calendar directly (and no buyLink)
+   */
+  const box = $(sidebar).children().first()
+  let url
+
+  // Case 1
+  if (box.is('p')) {
+    url = $(box).find('a').attr('href').trim()
+
+    if (!url) {
+      Crawl.get().addError(
+        `URL ${obj.url} contains a <p> as first elem but no link inside. Investigate further.`,
+        {ctxt: obj.url}
+      )
+      return item
+    }
+
+    item.buyUrl = url
+    item.saleOpen = false
+
+    try {
+      const saleStart = utils.saleDate($(box).text())
+      item.saleStartDate = saleStart
+    } catch (err) {
+      Crawl.get().addError(`Url ${url}: ${err.message}`, {ctxt: obj.url})
+    }
+
+    return item
+  }
+
+  // Case 2
+  if (box.is('a')) {
+    url = $(box).attr('href')
+
+    if (!url) {
+      Crawl.get().addError(
+        `URL ${obj.url} contains a <a> as first elem but no link inside. Investigate further.`,
+        {ctxt: obj.url}
+      )
+      return item
+    }
+
+    item.buyUrl = url
     item.saleOpen = true
     return item
   }
 
-  const buyBox = $(linkBox).children().first()
-  let err
-  if (!buyBox) {
-    Crawl.get().addError(
-      `URL ${obj.url} doesnt contain a buy box nor a buy link. Investigate further.`,
-      {ctxt: obj.url}
-    )
-    return item
-  }
-
-  const url = $(buyBox).find('a').attr('href').trim()
-  if (!url) {
-    err = Error(`URL ${obj.url} contains a buy box but no link inside. Investigate further.`)
-    err.ctxt = obj.url
-    Crawl.get().addError(
-      `URL ${obj.url} contains a buy box but no link inside. Investigate further.`,
-      {ctxt: obj.url}
-    )
-    return item
-  }
-
-  item.buyUrl = url
   item.saleOpen = false
 
-  try {
-    item.saleStartDate = utils.saleDate($(buyBox).text())
-  } catch (err) {
-    Crawl.get().addError(`Url ${url}: ${err.message}`, {ctxt: obj.url})
+  // Case 3 - no buy links
+  if (box.is('div') && box.attr('class') === 'Calendar') {
+    // Do nothing more
+    return item
   }
 
+  Crawl.get().addError(`Url ${url}: unexpected HTML in show page - ${box.html()}`, {ctxt: obj.url})
   return item
 }

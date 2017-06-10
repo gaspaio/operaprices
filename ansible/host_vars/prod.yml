@@ -3,4 +3,4 @@ common_hostname: 'instance-1'
 op_tag: master  # code tag
 loggly_tag: op-prod
 op_node_env: production
-docker_container_version: 0.0.12
+docker_container_version: 0.0.13
