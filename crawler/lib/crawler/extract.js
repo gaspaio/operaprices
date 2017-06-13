@@ -68,6 +68,8 @@ module.exports.prices = (obj) => {
     }
 
     item.prices[date] = []
+    // Some performances don't have prices publicly available
+    // (reserved for -40 for ex.)
     $(elem).find('div.PerformanceList__item__table > div > ol > li.PerformanceTable__rows').each((i, row) => {
       try {
         const available = $(row).attr('class').indexOf('unavailable') === -1
