@@ -150,8 +150,8 @@ def crawl_info(data):
     print("CRAWL INFO:\n- {} crawls\n- From {} to {} ({})\n- {} errors".format(
         dgs['crawl_nb'],
         dgs['crawl_from'],
-        dgs['crawl_to'],
-        dgs['crawl_frame'],
+        dgs['crawl_to'],#
+        dgf['crawl_frame'],
         dgs['crawl_err_nb'])
     )
 

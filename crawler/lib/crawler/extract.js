@@ -67,7 +67,7 @@ module.exports.prices = (obj) => {
       return item
     }
 
-    item.prices[date] = []
+    const prices = {}
     // Some performances don't have prices publicly available
     // (reserved for -40 for ex.)
     $(elem).find('div.PerformanceList__item__table > div > ol > li.PerformanceTable__rows').each((i, row) => {
@@ -75,7 +75,19 @@ module.exports.prices = (obj) => {
         const available = $(row).attr('class').indexOf('unavailable') === -1
         const cat = $(row).children('span.PerformanceTable__label').first().text().trim()
         const price = parseInt($(row).children('span.PerformanceTable__price').first().text().trim().split(' ')[0])
-        item.prices[date].push({available, cat, price})
+
+        // There are errors in the web page. Some performances have
+        // the prices two times, with only one available.
+        // We catch the available one and store only one price per categ.
+        if (!(cat in prices)) {
+          prices[cat] = {available, cat, price}
+        } else {
+          prices[cat] = {
+            available: available || prices[cat].available,
+            cat,
+            price
+          }
+        }
       } catch (err) {
         Crawl.get().addError(
           `price Extraction for ${item.buyLink}, perf ${date}. Unable to parse price: ${$(row).html()}`,
@@ -83,6 +95,7 @@ module.exports.prices = (obj) => {
         )
       }
     })
+    item.prices[date] = Object.values(prices)
   })
 
   return item
