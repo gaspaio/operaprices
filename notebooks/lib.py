@@ -9,15 +9,6 @@ TMP = None
 def augment_data(data):
     lastCrawl = data['crawl'].id.max()
 
-    # Shows
-    data['show']['comp_runlength_days'] = data['show'].apply(lambda x: (x.endDate - x.startDate).days, axis=1)
-    perfCounts = data['performance'].showId.value_counts()
-    data['show']['comp_performance_nb'] = data['show'].id.apply(lambda id: perfCounts[id])
-    data['show']['comp_presale_days'] = data['show'].apply(
-        lambda x: (x.startDate - x.saleStartDate).days if x.saleStartDate is not None else 0, axis=1
-    )
-    data['show']['comp_opening_weekday'] = data['show'].startDate.apply(lambda d: d.strftime('%a'))
-
     # Crawls
     cs = data['crawl']
     cs['comp_has_err'] = cs['errors'].apply(lambda x: bool(x))
@@ -70,6 +61,23 @@ def augment_data(data):
     data['generics']['crawl_to'] = cs.startTime.max()
     data['generics']['crawl_frame'] = data['generics']['crawl_to'] - data['generics']['crawl_from']
     data['generics']['crawl_err_nb'] = cs.comp_has_err.sum()
+
+    # Shows
+    data['show']['comp_runlength_days'] = data['show'].apply(lambda x: (x.endDate - x.startDate).days, axis=1)
+    perfCounts = data['performance'].showId.value_counts()
+    data['show']['comp_performance_nb'] = data['show'].id.apply(lambda id: perfCounts[id])
+    data['show']['comp_presale_days'] = data['show'].apply(
+        lambda x: (x.startDate - x.saleStartDate).days if x.saleStartDate is not None else 0, axis=1
+    )
+    data['show']['comp_opening_weekday'] = data['show'].startDate.apply(lambda d: d.strftime('%a'))
+
+    show_cats = data['performance'].groupby(by='showId').comp_categories
+    data['show']['comp_categories'] = show_cats.apply(lambda x: x.iloc[0])
+
+    counts = show_cats.apply(lambda x: len(x.value_counts()))
+    for sid in counts[counts > 1].index:
+        print('WARNING: show with variable categories')
+        show_info(data, show_id)
 
     return data
 
@@ -141,6 +149,22 @@ def load():
     # Remove prices crawled on this date
     out['price'] = out['price'][out['price'].crawlId != 293].copy()
 
+    # Performances 334 and 396 have some duplicated prices
+
+    def todrop_dup_prices(perfId):
+        todrop = []
+        perf_dups = out['price'][out['price'].performanceId == perfId].groupby(by=['crawlId', 'category'])
+        for g in perf_dups.groups.items():
+            if len(g[1]) < 2: continue
+            i1 = out['price'].loc[g[1][0]]
+            i2 = out['price'].loc[g[1][1]]
+            if i1.available == i2.available: todrop.append(g[1][0])
+            else: todrop.append(g[1][0] if not i1.available else g[1][1])
+        return todrop
+
+    drops = todrop_dup_prices(334) + todrop_dup_prices(396)
+    out['price'].drop(drops, inplace=True)
+
     return augment_data(out)
 
 # Display info
@@ -177,8 +201,10 @@ def show_info(data, show_id, display=True):
     if display:
         perfs = data['performance'][data['performance'].showId == info.id].sort_values(by='date')
         print(show_info_str(info))
+        print('     ' + 'Cats: ' + info.comp_categories)
+        print('     ' + 'Performances:')
         for p in perfs.itertuples():
-            print('      ' + perf_info_str(p))
+            print('       ' + perf_info_str(p))
     return info
 
 def perf_info(data, perf_id, display=True):
