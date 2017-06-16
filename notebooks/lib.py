@@ -13,11 +13,16 @@ def augment_data(data):
     cs = data['crawl']
     cs['comp_has_err'] = cs['errors'].apply(lambda x: bool(x))
 
+    #
     # Prices
+    #
     data['price'] = pd.merge(
         data['price'], data['crawl'][['id', 'startTime']], how='left', left_on='crawlId', right_on='id'
     )[['crawlId', 'startTime', 'performanceId', 'category', 'price', 'available']]
     data['price'].rename(columns = {'startTime': 'crawl_startTime'}, inplace=True)
+
+    # Add showId to price table
+    data['price'] = pd.merge(data['price'], data['performance'][['showId']], how='left', left_on='performanceId', right_index=True)
 
     #
     # Performances
@@ -78,6 +83,8 @@ def augment_data(data):
     for sid in counts[counts > 1].index:
         print('WARNING: show with variable categories')
         show_info(data, show_id)
+
+    data['show_cheapest'] = data['price'][data['price'].available == True].groupby(by=['showId', 'crawl_startTime']).apply(lambda x: x.price[x.price.idxmin()])
 
     return data
 
