@@ -157,7 +157,6 @@ def load():
     out['price'] = out['price'][out['price'].crawlId != 293].copy()
 
     # Performances 334 and 396 have some duplicated prices
-
     def todrop_dup_prices(perfId):
         todrop = []
         perf_dups = out['price'][out['price'].performanceId == perfId].groupby(by=['crawlId', 'category'])
@@ -196,23 +195,23 @@ def perf_info_str(info):
     if not info.comp_off_sale: return base + ' - Never opened'
     return '{} - Closed abruptly at {}'.format(base, info.comp_off_sale)
 
-def show_list(data, type=None):
+def show_list(data, type=None, short=True):
     shows = data['show'] if type is None else data['show'][data['show'].type == type]
     shows = shows.sort_values(by=['type', 'startDate'])
     for s in shows.itertuples():
-        show_info(data, s.id);
+        show_info(data, s.id, short=short);
 
 
-def show_info(data, show_id, display=True):
+def show_info(data, show_id, display=True, short=False):
     info = data['show'].loc[show_id]
     if display:
         perfs = data['performance'][data['performance'].showId == info.id].sort_values(by='date')
         print(show_info_str(info))
+        if short: return
         print('     ' + 'Cats: ' + info.comp_categories)
         print('     ' + 'Performances:')
         for p in perfs.itertuples():
             print('       ' + perf_info_str(p))
-    return info
 
 def perf_info(data, perf_id, display=True):
     perf = data['performance'].loc[perf_id]
@@ -221,7 +220,6 @@ def perf_info(data, perf_id, display=True):
         print(perf_info_str(perf))
         print('      cats: ' + perf.comp_categories)
         print('      show: ' + show_info_str(show))
-    return perf
 
 def error_info(crawl, start=None):
     if start: sel = crawl.comp_has_err & (crawl.startTime >= start)
@@ -235,4 +233,6 @@ def error_info(crawl, start=None):
             msg = e if type(e) == str else e['message']
             print("- {}".format(msg[:150].strip().replace("\n", '')))
 
-
+#def plot_cat_ts(sid):
+#    pr = data['price'][data['price'].showId == sid]
+#    cats =
