@@ -1,22 +1,22 @@
 {
   "meta": {
     "lastCrawl": {
-      "startTime": 1497936480,
-      "endTime": 1497936502,
-      "duration": 22,
+      "startTime": 1497943680,
+      "endTime": 1497943704,
+      "duration": 24,
       "stats": {
         "requests": 84,
         "total_items": 40,
         "total_performances": 415,
-        "on_sale": 14,
+        "on_sale": 18,
         "locations": {
           "Opéra Bastille": 20,
           "Palais Garnier": 19,
           "Amphithéâtre Bastille": 1
         },
         "types": {
-          "ballet": 16,
-          "opera": 24
+          "opera": 24,
+          "ballet": 16
         }
       },
       "errors": []
@@ -37,7 +37,7 @@
       "startDate": 1495886400,
       "endDate": 1498564800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1498066200,
@@ -62,7 +62,7 @@
       "startDate": 1509624000,
       "endDate": 1510401600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -81,7 +81,7 @@
       "startDate": 1521288000,
       "endDate": 1523448000,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -100,7 +100,7 @@
       "startDate": 1505822400,
       "endDate": 1507291200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1505842200,
@@ -125,7 +125,7 @@
       "startDate": 1515844800,
       "endDate": 1517313600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -144,7 +144,7 @@
       "startDate": 1497096000,
       "endDate": 1499947200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1498393800,
@@ -174,7 +174,7 @@
       "startDate": 1516795200,
       "endDate": 1518782400,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -193,7 +193,7 @@
       "startDate": 1505217600,
       "endDate": 1508587200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1505583000,
@@ -258,7 +258,7 @@
       "startDate": 1516104000,
       "endDate": 1518264000,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -277,7 +277,7 @@
       "startDate": 1526558400,
       "endDate": 1529236800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -296,7 +296,7 @@
       "startDate": 1521547200,
       "endDate": 1523707200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -315,7 +315,7 @@
       "startDate": 1524830400,
       "endDate": 1527076800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -334,7 +334,7 @@
       "startDate": 1510747200,
       "endDate": 1514203200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1511202600,
@@ -364,7 +364,7 @@
       "startDate": 1528372800,
       "endDate": 1531396800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -379,14 +379,35 @@
       "url": "https://www.operadeparis.fr/saison-17-18/opera/la-boheme",
       "buyUrl": "https://www.operadeparis.fr/billetterie/241-la-boheme",
       "saleStartDate": 1497960000,
-      "saleOpen": false,
+      "saleOpen": true,
       "startDate": 1512129600,
       "endDate": 1514721600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
-      "cheapestPerformances": [],
-      "cheapestPrice": null,
-      "tendency": null
+      "updatedAt": 1497943680,
+      "cheapestPerformances": [
+        [
+          1512153000,
+          15,
+          "Cat9"
+        ],
+        [
+          1513103400,
+          15,
+          "Cat9"
+        ],
+        [
+          1513621800,
+          15,
+          "Cat9"
+        ],
+        [
+          1514313000,
+          15,
+          "Cat9"
+        ]
+      ],
+      "cheapestPrice": 15,
+      "tendency": 0
     },
     {
       "id": 17,
@@ -402,7 +423,7 @@
       "startDate": 1529496000,
       "endDate": 1531569600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -421,7 +442,7 @@
       "startDate": 1509019200,
       "endDate": 1510833600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1509561000,
@@ -446,7 +467,7 @@
       "startDate": 1507636800,
       "endDate": 1510401600,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1509469200,
@@ -471,7 +492,7 @@
       "startDate": 1504958400,
       "endDate": 1508587200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1505928600,
@@ -501,7 +522,7 @@
       "startDate": 1488888000,
       "endDate": 1500206400,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1498393800,
@@ -546,7 +567,7 @@
       "startDate": 1516708800,
       "endDate": 1518004800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -561,14 +582,30 @@
       "url": "https://www.operadeparis.fr/saison-17-18/opera/de-la-maison-des-morts",
       "buyUrl": "https://www.operadeparis.fr/billetterie/237-de-la-maison-des-morts",
       "saleStartDate": 1497960000,
-      "saleOpen": false,
+      "saleOpen": true,
       "startDate": 1511006400,
       "endDate": 1512216000,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
-      "cheapestPerformances": [],
-      "cheapestPrice": null,
-      "tendency": null
+      "updatedAt": 1497943680,
+      "cheapestPerformances": [
+        [
+          1511031600,
+          15,
+          "Cat9"
+        ],
+        [
+          1511703000,
+          15,
+          "Cat9"
+        ],
+        [
+          1512241200,
+          15,
+          "Cat9"
+        ]
+      ],
+      "cheapestPrice": 15,
+      "tendency": 0
     },
     {
       "id": 24,
@@ -584,7 +621,7 @@
       "startDate": 1528545600,
       "endDate": 1531396800,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -603,7 +640,7 @@
       "startDate": 1517572800,
       "endDate": 1519819200,
       "createdAt": 1495092480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -622,7 +659,7 @@
       "startDate": 1512907200,
       "endDate": 1514030400,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -637,14 +674,100 @@
       "url": "https://www.operadeparis.fr/saison-17-18/ballet/play",
       "buyUrl": "https://www.operadeparis.fr/billetterie/239-play",
       "saleStartDate": 1497960000,
-      "saleOpen": false,
+      "saleOpen": true,
       "startDate": 1512561600,
       "endDate": 1514721600,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
-      "cheapestPerformances": [],
-      "cheapestPrice": null,
-      "tendency": null
+      "updatedAt": 1497943680,
+      "cheapestPerformances": [
+        [
+          1512585000,
+          30,
+          "Cat4"
+        ],
+        [
+          1512671400,
+          30,
+          "Cat4"
+        ],
+        [
+          1512846000,
+          30,
+          "Cat4"
+        ],
+        [
+          1512932400,
+          30,
+          "Cat4"
+        ],
+        [
+          1513103400,
+          30,
+          "Cat4"
+        ],
+        [
+          1513191600,
+          30,
+          "Cat4"
+        ],
+        [
+          1513362600,
+          30,
+          "Cat4"
+        ],
+        [
+          1513621800,
+          30,
+          "Cat4"
+        ],
+        [
+          1513708200,
+          30,
+          "Cat4"
+        ],
+        [
+          1513794600,
+          30,
+          "Cat4"
+        ],
+        [
+          1513967400,
+          30,
+          "Cat4"
+        ],
+        [
+          1514055600,
+          30,
+          "Cat4"
+        ],
+        [
+          1514122200,
+          30,
+          "Cat4"
+        ],
+        [
+          1514399400,
+          30,
+          "Cat4"
+        ],
+        [
+          1514485800,
+          30,
+          "Cat4"
+        ],
+        [
+          1514572200,
+          30,
+          "Cat4"
+        ],
+        [
+          1514658600,
+          30,
+          "Cat4"
+        ]
+      ],
+      "cheapestPrice": 30,
+      "tendency": 0
     },
     {
       "id": 28,
@@ -656,14 +779,100 @@
       "url": "https://www.operadeparis.fr/saison-17-18/ballet/don-quichotte",
       "buyUrl": "https://www.operadeparis.fr/billetterie/240-don-quichotte",
       "saleStartDate": 1497960000,
-      "saleOpen": false,
+      "saleOpen": true,
       "startDate": 1512993600,
       "endDate": 1515240000,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
-      "cheapestPerformances": [],
-      "cheapestPrice": null,
-      "tendency": null
+      "updatedAt": 1497943680,
+      "cheapestPerformances": [
+        [
+          1513017000,
+          15,
+          "Cat9"
+        ],
+        [
+          1513189800,
+          15,
+          "Cat9"
+        ],
+        [
+          1513276200,
+          15,
+          "Cat9"
+        ],
+        [
+          1513362600,
+          15,
+          "Cat9"
+        ],
+        [
+          1513708200,
+          15,
+          "Cat9"
+        ],
+        [
+          1513794600,
+          15,
+          "Cat9"
+        ],
+        [
+          1513967400,
+          15,
+          "Cat9"
+        ],
+        [
+          1514140200,
+          15,
+          "Cat9"
+        ],
+        [
+          1514226600,
+          15,
+          "Cat9"
+        ],
+        [
+          1514399400,
+          15,
+          "Cat9"
+        ],
+        [
+          1514485800,
+          15,
+          "Cat9"
+        ],
+        [
+          1514658600,
+          15,
+          "Cat9"
+        ],
+        [
+          1514917800,
+          15,
+          "Cat9"
+        ],
+        [
+          1515004200,
+          15,
+          "Cat9"
+        ],
+        [
+          1515090600,
+          15,
+          "Cat9"
+        ],
+        [
+          1515177000,
+          15,
+          "Cat9"
+        ],
+        [
+          1515263400,
+          15,
+          "Cat9"
+        ]
+      ],
+      "cheapestPrice": 15,
+      "tendency": 0
     },
     {
       "id": 29,
@@ -679,7 +888,7 @@
       "startDate": 1523620800,
       "endDate": 1524052800,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -698,7 +907,7 @@
       "startDate": 1506081600,
       "endDate": 1507809600,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1507379400,
@@ -723,7 +932,7 @@
       "startDate": 1526731200,
       "endDate": 1528459200,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -742,7 +951,7 @@
       "startDate": 1505995200,
       "endDate": 1505995200,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": 0
@@ -761,7 +970,7 @@
       "startDate": 1523016000,
       "endDate": 1525435200,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -780,7 +989,7 @@
       "startDate": 1508932800,
       "endDate": 1510833600,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1508952600,
@@ -845,7 +1054,7 @@
       "startDate": 1498910400,
       "endDate": 1500120000,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1499275800,
@@ -905,7 +1114,7 @@
       "startDate": 1529928000,
       "endDate": 1531483200,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -924,7 +1133,7 @@
       "startDate": 1524830400,
       "endDate": 1526126400,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -943,7 +1152,7 @@
       "startDate": 1521892800,
       "endDate": 1523016000,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -962,7 +1171,7 @@
       "startDate": 1519473600,
       "endDate": 1521892800,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -981,7 +1190,7 @@
       "startDate": 1518264000,
       "endDate": 1520424000,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": null
@@ -1000,7 +1209,7 @@
       "startDate": 1498910400,
       "endDate": 1500206400,
       "createdAt": 1495524480,
-      "updatedAt": 1497936480,
+      "updatedAt": 1497943680,
       "cheapestPerformances": [
         [
           1499884200,
