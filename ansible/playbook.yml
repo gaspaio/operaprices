@@ -1,7 +1,7 @@
 ---
 - hosts: app
   vars:
-    docker_dcversion: 1.13.0
+    docker_dcversion: 1.14.0
   vars_files:
     - secrets/vars.yml
 
