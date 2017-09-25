@@ -6,7 +6,7 @@ ENV OP_DATA_DIR /data
 RUN apk --no-cache add sqlite git openssh-client && \
     git clone --depth 1 -b master https://github.com/gaspaio/operaprices.git /src && \
     cd /src/crawler && \
-    yarn install
+    npm install
 
 COPY entrypoint.sh /entrypoint.sh
 COPY ssh /root/.ssh

@@ -10,6 +10,13 @@ module.exports.getHtml = (obj) => {
     return Promise.resolve(obj)
   }
 
+  // get more info on this erreur
+  if (obj.url === null) {
+    Crawl.get().addError(`Received NULL url`, {ctxt: item})
+    obj.html = null
+    return Promise.resolve(obj)
+  }
+
   Crawl.get().incStat('requests')
   return fetch(obj.url)
     .then(res => res.text())

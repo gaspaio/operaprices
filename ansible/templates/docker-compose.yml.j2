@@ -1,7 +1,7 @@
 version: "3"
 services:
   crawler:
-    image: eu.gcr.io/operaprices/crawler:{{ docker_container_version }}
+    image: eu.gcr.io/operaprices/crawler:{{ docker_dcversion }}
     restart: always
     environment:
       - NODE_ENV={{ op_node_env }}
