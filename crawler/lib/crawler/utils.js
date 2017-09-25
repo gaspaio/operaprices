@@ -12,7 +12,7 @@ const showType = str => {
   switch (type) {
     case 'Opéra':
     case 'Opéra-Académie':
-      ret = 'opera'
+    case 'Opéra-JeunePublic-Académie':
       ret = 'opera'
       break
     case 'Evénement-Opéra':
