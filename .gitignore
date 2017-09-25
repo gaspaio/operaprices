@@ -19,3 +19,5 @@ ansible/secrets
 
 .ipynb_checkpoints
 __pycache__
+
+notes.md
