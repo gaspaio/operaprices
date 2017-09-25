@@ -21,6 +21,7 @@
           <ul>
             <li v-for="perf in show.minPerfs">{{ perf }}</li>
           </ul>
+          <p v-if="show.extraMinPerfsStr" class="extra-perfs-str">{{ show.extraMinPerfsStr }}</p>
         </td>
       </tr>
       </tbody>
@@ -30,6 +31,10 @@
 
 <script>
 import { showDateString, singleDateString } from '@/lib/utils'
+
+const morePerfsStr = nb => {
+  return `${nb} more date${nb > 1 ? 's' : ''} available at this price`
+}
 
 export default {
   name: 'ShowsSaleOpen',
@@ -48,13 +53,15 @@ export default {
             dates: showDateString(show.startDate, show.endDate),
             minPrice: `${show.cheapestPrice} €`,
             tendency: show.tendency,
-            minPerfs: show.cheapestPerformances.map(p => `${singleDateString(p[0], 'long')} (${p[2]})`)
+            minPerfs: show.cheapestPerformances.slice(0, 3).map(p => `${singleDateString(p[0], 'long')} (${p[2]})`),
+            extraMinPerfsStr: show.cheapestPerformances.length - 3 > 0 ? morePerfsStr(show.cheapestPerformances.length - 3) : false
           }
         })
 
       tmp.sort((s1, s2) => s1.start - s2.start)
       return tmp
     }
+
   }
 }
 </script>
@@ -78,6 +85,11 @@ p.author {
 p.location {
   margin-bottom: 0.2em;
   font-size: 0.8em;
+}
+
+p.extra-perfs-str {
+  font-size: 0.9em;
+  font-style: italic;
 }
 
 th.price {

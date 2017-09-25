@@ -1,6 +1,3 @@
 module.exports = {
-  NODE_ENV: '"production"',
-  APP_CONFIG: {
-    apiUrl: '"/api"'
-  }
+  NODE_ENV: '"production"'
 }

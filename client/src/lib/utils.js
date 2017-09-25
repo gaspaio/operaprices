@@ -9,13 +9,17 @@ const showDateString = (start, end) => {
   const sd = moment.tz(start, TZ)
   const ed = moment.tz(end, TZ)
 
+  if (start === end) {
+    return `${sd.format('D MMMM YYYY')}`
+  }
+
   if (sd.year() !== ed.year()) {
     duFormat += ' MMMM YYYY'
   } else if (sd.month() !== ed.month()) {
     duFormat += ' MMMM'
   }
 
-  return `From ${sd.format(duFormat)} to ${ed.format(auFormat)}`
+  return `${sd.format(duFormat)} - ${ed.format(auFormat)}`
 }
 
 const singleDateString = (date, format) => {
