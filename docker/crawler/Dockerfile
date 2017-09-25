@@ -1,4 +1,4 @@
-FROM node:7-alpine
+FROM node:8-alpine
 
 ENV NODE_CONFIG_DIR /src/crawler/config
 ENV OP_DATA_DIR /data
