@@ -2,24 +2,26 @@
   "meta": {
     "lastCrawl": {
       "startTime": 1506335280,
-      "endTime": 1506335433,
-      "duration": 153,
+      "endTime": 1506335301,
+      "duration": 21,
       "stats": {
-        "requests": 78,
-        "total_items": 37,
-        "total_performances": 376,
+        "requests": 76,
+        "total_items": 36,
+        "total_performances": 370,
         "locations": {
           "Palais Garnier": 16,
           "Opéra Bastille": 17,
-          "Amphithéâtre Bastille": 4
+          "Amphithéâtre Bastille": 3
         },
         "types": {
           "ballet": 13,
-          "opera": 24
+          "opera": 23
         },
-        "on_sale": 20
+        "on_sale": 19
       },
-      "errors": []
+      "errors": [
+        "Item extraction: Unknown show type string :Opéra - Jeune Public  - Académie"
+      ]
     }
   },
   "shows": [
@@ -1029,35 +1031,14 @@
       "url": "https://www.operadeparis.fr/saison-17-18/opera/kurt-weill-story",
       "buyUrl": "https://www.operadeparis.fr/billetterie/299-kurt-weill-story",
       "saleStartDate": 1504699200,
-      "saleOpen": true,
+      "saleOpen": false,
       "startDate": 1521288000,
       "endDate": 1521892800,
       "createdAt": 1503912480,
-      "updatedAt": 1506335280,
-      "cheapestPerformances": [
-        [
-          1521313200,
-          25,
-          "Cat1"
-        ],
-        [
-          1521658800,
-          25,
-          "Cat1"
-        ],
-        [
-          1521831600,
-          25,
-          "Cat1"
-        ],
-        [
-          1521918000,
-          25,
-          "Cat1"
-        ]
-      ],
-      "cheapestPrice": 25,
-      "tendency": 0
+      "updatedAt": 1504092480,
+      "cheapestPerformances": [],
+      "cheapestPrice": null,
+      "tendency": null
     }
   ]
 }
