@@ -3,7 +3,7 @@
 set -x
 set -e
 cd client
-yarn build
+npm run build
 cd ..
 
 rm -rf /tmp/op
