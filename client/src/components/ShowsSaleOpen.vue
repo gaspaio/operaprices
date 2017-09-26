@@ -99,7 +99,7 @@ th.price {
 
 th.perfs {
   padding-left: 20px;
-  width: 250px;
+  width: 300px;
   vertical-align: bottom;
 }
 
