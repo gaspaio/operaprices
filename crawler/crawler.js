@@ -6,10 +6,7 @@ const config = require('config')
 if (process.argv.length >= 2 && process.argv[2] === 'start') {
   const crawlJob = new CronJob( // eslint-disable-line no-unused-vars
     config.get('crawler_cron'),
-    () => crawler.crawl().catch(err => {
-      console.error(err)
-      process.exit(1)
-    }),
+    () => crawler.crawl().catch(err => logger.error(err.message, err)),
     () => logger.info('Crawler deamon stopped.'),
     true
   )
