@@ -12,5 +12,5 @@ if (process.argv.length >= 2 && process.argv[2] === 'start') {
   )
   logger.info(`Starting crawler deamon. Cron=${config.get('crawler_cron')}`)
 } else {
-  crawler.crawl().catch(err => console.error(err))
+  crawler.crawl().catch(err => logger.error(err.message, err))
 }
