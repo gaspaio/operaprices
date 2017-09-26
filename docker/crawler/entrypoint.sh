@@ -8,4 +8,9 @@ if [ ! -f "$DB_PATH"  ]; then
     sqlite3 $DB_PATH < /src/crawler/dbinit.sql
 fi
 
-node /src/crawler/crawler.js start
+if [[ $1 = 'crawl' ]]; then
+    node /src/crawler/crawler.js
+else
+    node /src/crawler/crawler.js start
+fi
+

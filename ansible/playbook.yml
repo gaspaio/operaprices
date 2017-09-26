@@ -1,7 +1,7 @@
 ---
 - hosts: app
   vars:
-    docker_dcversion: 1.14.0
+    docker_dcversion: 1.15.1
   vars_files:
     - secrets/vars.yml
 
@@ -22,6 +22,7 @@
         - fail2ban
         - git
         - make
+        - htop
       # Docker
       - apt_key: url="https://download.docker.com/linux/debian/gpg" id=0EBFCD88 state=present
       - apt_repository:
@@ -56,8 +57,13 @@
         template: src=docker-compose.yml.j2 dest=/etc/docker/docker-compose.yml mode=644
       - name: login to docker registry
         shell: docker login -u _json_key -p "$(cat /etc/docker/gcr_key.json)" https://eu.gcr.io
-      - name: redeploy crawler container
-        command: docker-compose -f /etc/docker/docker-compose.yml up -d
+      - name: pull crawler container image
+        command: docker-compose -f /etc/docker/docker-compose.yml pull
+      - name: set cron job
+        cron:
+          minute=28
+          name=crawler
+          job="/usr/local/bin/docker-compose -f /etc/docker/docker-compose.yml run crawler crawl"
       tags: ['crawler']
 
   handlers:

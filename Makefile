@@ -20,10 +20,13 @@ up:
 
 vminit:
 	vagrant up
-	${ANSIBLE_CMD} -t system ansible/playbook.yml
+	#${ANSIBLE_CMD} -t system ansible/playbook.yml
 vmstart: vminit dbup
 	scp -i ansible/secrets/dev.private data/development.db root@192.168.33.10:/data/
 	${ANSIBLE_CMD} -t crawler ansible/playbook.yml
+vmdeploy:
+	${ANSIBLE_CMD} -t crawler ansible/playbook.yml
+
 
 dbup:
 	[ -f data/development.db ] && mv data/development.db data/development.db.bak || true
