@@ -1,22 +1,22 @@
 {
   "meta": {
     "lastCrawl": {
-      "startTime": 1520443695,
-      "endTime": 1520443706,
-      "duration": 11,
+      "startTime": 1520465291,
+      "endTime": 1520465300,
+      "duration": 9,
       "stats": {
-        "requests": 38,
-        "total_items": 17,
-        "total_performances": 155,
-        "on_sale": 17,
+        "requests": 36,
+        "total_items": 16,
+        "total_performances": 154,
+        "on_sale": 16,
         "locations": {
           "Opéra Bastille": 7,
-          "Palais Garnier": 8,
-          "Amphithéâtre Bastille": 2
+          "Amphithéâtre Bastille": 2,
+          "Palais Garnier": 7
         },
         "types": {
-          "ballet": 8,
-          "opera": 9
+          "opera": 9,
+          "ballet": 7
         }
       },
       "errors": []
@@ -37,16 +37,16 @@
       "startDate": 1521288000,
       "endDate": 1523448000,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
-          1522863000,
-          45,
-          "Cat4"
+          1523467800,
+          90,
+          "Cat2"
         ]
       ],
-      "cheapestPrice": 45,
-      "tendency": -1
+      "cheapestPrice": 90,
+      "tendency": 1
     },
     {
       "id": 11,
@@ -62,7 +62,7 @@
       "startDate": 1526558400,
       "endDate": 1529236800,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1526751000,
@@ -87,15 +87,10 @@
       "startDate": 1521288000,
       "endDate": 1523707200,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1521570600,
-          70,
-          "Cat6"
-        ],
-        [
-          1522585800,
           70,
           "Cat6"
         ],
@@ -122,7 +117,7 @@
       "startDate": 1524830400,
       "endDate": 1527076800,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1524844800,
@@ -167,7 +162,7 @@
       "startDate": 1528113600,
       "endDate": 1531396800,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1530554400,
@@ -207,7 +202,7 @@
       "startDate": 1529496000,
       "endDate": 1531569600,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1530725400,
@@ -257,7 +252,7 @@
       "startDate": 1528286400,
       "endDate": 1531396800,
       "createdAt": 1495092480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1531157400,
@@ -282,7 +277,7 @@
       "startDate": 1523620800,
       "endDate": 1524052800,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": 0
@@ -301,7 +296,7 @@
       "startDate": 1526644800,
       "endDate": 1528459200,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1527337800,
@@ -326,7 +321,7 @@
       "startDate": 1523016000,
       "endDate": 1525435200,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1524677400,
@@ -351,7 +346,7 @@
       "startDate": 1529928000,
       "endDate": 1531483200,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1530725400,
@@ -386,7 +381,7 @@
       "startDate": 1524830400,
       "endDate": 1526126400,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1525282200,
@@ -446,21 +441,16 @@
       "startDate": 1521892800,
       "endDate": 1523016000,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
-          1522171800,
-          160,
-          "Cat1"
-        ],
-        [
-          1522258200,
-          160,
-          "Cat1"
+          1523035800,
+          209,
+          "Optima"
         ]
       ],
-      "cheapestPrice": 160,
-      "tendency": -1
+      "cheapestPrice": 209,
+      "tendency": 1
     },
     {
       "id": 40,
@@ -476,7 +466,7 @@
       "startDate": 1519387200,
       "endDate": 1521892800,
       "createdAt": 1495524480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": 1
@@ -495,7 +485,7 @@
       "startDate": 1529755200,
       "endDate": 1529755200,
       "createdAt": 1503912480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [],
       "cheapestPrice": null,
       "tendency": 0
@@ -514,7 +504,7 @@
       "startDate": 1521288000,
       "endDate": 1521892800,
       "createdAt": 1503912480,
-      "updatedAt": 1520443695,
+      "updatedAt": 1520465291,
       "cheapestPerformances": [
         [
           1521313200,
